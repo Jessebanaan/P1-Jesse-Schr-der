@@ -4,5 +4,4 @@ function setup() {
 
 function draw() {
   background(220);
-  Text("Jesse Schröder,10,10")
 }
