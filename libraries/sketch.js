@@ -154,7 +154,7 @@ function draw() {
 
   //Extra opdracht auto
   fill("black")
-  text("Extra opdracht auto", 100, 730)
+  text("Extra opdracht", 100, 730)
   fill("red");
   rect(150, 800, 120, 50);
   
