@@ -143,4 +143,16 @@ function draw() {
   fill("green")
   square(680,740,50)
   square(770,740,50)
+
+
+    fill(255, 0, 0);
+  rect(150, 800, 120, 50);
+  
+  // Draw the car roof
+  rect(180, 760, 60, 40);
+  
+  // Wielen
+  fill(0); 
+  circle(175, 850, 30);
+  circle(245, 850, 30);
 }
