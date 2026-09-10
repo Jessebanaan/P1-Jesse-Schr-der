@@ -143,4 +143,10 @@ function draw() {
   fill("green")
   square(680,740,50)
   square(770,740,50)
+
+  //droomhuis
+  fill(220)
+  rect(200,850,100,100)
+  line(50,450,100,400)
+  line(150,450,100,400)
 }
