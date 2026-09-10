@@ -4,11 +4,13 @@ function setup() {
 
 function draw() {
   //Mijn volledige naam
+  text("1. Naam", 20, 50)
   background(220);
   fill("black")
   text("Jesse Schröder", 50, 50);
 
   //Nederlandse vlag
+  text("2. Nederlandse vlag", 40, 90)
   strokeWeight(0)
   fill("red")
   rect(50,100,100,30)
@@ -19,27 +21,28 @@ function draw() {
 
 
   //Schaakbord
+  fill("black")
+  text("3. Schaakbord", 50, 240)
   strokeWeight(3)
   fill("white")
   rect(50,250,90,90)
   fill("black")
   rect(50,250,30,30)
-  fill("black")
   rect(80,280,30,30)
-  fill("black")
   rect(110,310,30,30)
-  fill("black")
   rect(50,310,30,30)
-  fill("black")
   rect(110,250,30,30)
 
   //Transparant huis
+  text("4. Transparant huis", 40, 390)
   fill(220)
   rect(50,450,100,100)
   line(50,450,100,400)
   line(150,450,100,400)
 
   //Verkeerslicht
+  fill("black")
+  text("5. Verkeerslicht", 300, 40)
   strokeWeight(0)
   fill(100)
   rect(300,50,80,240)
@@ -52,6 +55,8 @@ function draw() {
   circle(340,240,60)
 
   //Dobbelsteen
+  fill("black")
+  text("6. Dobbelsteen", 300, 380)
   strokeWeight(3)
   fill("white")
   square(300,400,100,20)
@@ -61,6 +66,7 @@ function draw() {
   circle(325,425,25)
 
   //Mario
+  text("7. Mario", 600, 30)
   strokeWeight(0)
   fill("brown")
   square(600,100,25)
@@ -125,6 +131,8 @@ function draw() {
   square(600,225,100)
 
   //Ander game karakter namelijk minecraft mens
+  fill("black")
+  text("7. Ander karakter", 650, 480)
   fill("pink")
   square(700,500,100)
   
@@ -145,7 +153,9 @@ function draw() {
   square(770,740,50)
 
   //Extra opdracht auto
-  fill(255, 0, 0);
+  fill("black")
+  text("Extra opdracht auto", 100, 730)
+  fill("red");
   rect(150, 800, 120, 50);
   
   rect(180, 760, 60, 40);
