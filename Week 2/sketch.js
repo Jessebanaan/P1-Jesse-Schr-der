@@ -1,3 +1,29 @@
+// Auto 1
+let autoX = 100;
+let autoY = 710;
+let autoB = 170;
+let autoW = 120;
+let wielX3 = 130;
+let wielY3 = 820;
+let wielDiameter2 = 70;
+let wielX4 = 240;
+let wielY4 = 820;
+let wielDiameter3 = 70;
+
+let autoSnelheid = 2;
+// Auto 2
+let autoX2 = 100;
+let autoY2 = 570;
+let autoB2 = 170;
+let autoW2 = 120;
+let wielX = 130;
+let wielY = 680;
+let wielDiameter = 70;
+let wielX2 = 240;
+let wielY2 = 680;
+
+let autoSnelheid2 = 3;
+
 // Zon
 let cirkelX = 130;
 let cirkelY = 130;
@@ -7,37 +33,109 @@ let zondiameter = 150;
 let roodX = 1205;
 let roodY = 460;
 let rooddiameter = 40;
+let stoplichtRood;
+// Groen stoplicht
+let groenX = 1205;
+let groenY = 550;
+let groendiameter = 40;
+let stoplichtGroen;
+// Oranje stoplicht
+let oranjeX = 1205;
+let oranjeY = 505;
+let oranjediameter = 40;
+let stoplichtOranje;
 
-let tint = 0;
+let flitsCirkelX = 1265; 
+let flitsCirkelY = 365;
+let flitsCirkelDiameter = 20;
+let flitserWit;
 
-let daycolor = ("lightblue");
-let nightcolor = ("black")
+// Wolk 1
+let wolkX1 = 300;
+let wolkY1 = 85;
+let wolkDiameter1 = 70;
 
-function setup() {
-  canvasy = (870)
-  canvasx = (1400)
-  createCanvas(canvasx, canvasy)
-}
+let wolkX2 = 330;
+let wolkY2 = 80;
+let wolkDiameter2 = 70;
+
+let wolkX3 = 360;
+let wolkY3 = 85;
+let wolkDiameter3 = 70;
+
+// Wolk 2
+let wolkX4 = 500;
+let wolkY4 = 155;
+let wolkDiameter4 = 70;
+
+let wolkX5 = 530;
+let wolkY5 = 150;
+let wolkDiameter5 = 70;
+
+let wolkX6 = 560;
+let wolkY6 = 155;
+let wolkDiameter6 = 70;
+
+let stoplichtStaatOpRood = false;
+
+let flitsTimer = 0;
 
 function keyPressed() {
   if (keyCode === 13) {
     console.log("Enter is ingedrukt");
+    stoplichtGroen = color("#268500");
+    stoplichtOranje = color("#ffc400");
+
+    setTimeout(() => {
+      stoplichtRood = color("#ff0000");
+      stoplichtOranje = color("#b38900");
+      stoplichtStaatOpRood = true;
+    }, 1000);
   }
 }
 
 function keyReleased() {
   if (keyCode === 13) {
+    stoplichtRood = color("#910000");
+    stoplichtOranje = color("#b38900");
+    stoplichtGroen = color("#48ff00");
+    stoplichtStaatOpRood = false;
     console.log("Enter is losgelaten");
   }
 }
 
+function setup() {
+  canvasy = (870)
+  canvasx = (1400)
+  createCanvas(canvasx, canvasy)
+  stoplichtRood = color("#930101"); 
+  stoplichtGroen = color("#48ff00"); 
+  stoplichtOranje = color("#b38900"); 
+}
 
 function draw() {
 background("lightblue")
-  if (millis() > 23500) {
-    background("black");
+
+  // Auto's stoppen voor het stoplicht
+  // Auto 1 (langzame auto)
+  if (stoplichtStaatOpRood == true && autoX >= 900) {
+    autoSnelheid = 1;
   } else {
-    background("lightblue"); 
+    autoSnelheid = 2;
+  }
+  if (stoplichtStaatOpRood == true && autoX >= 1030) {
+    autoSnelheid = 0;
+  }
+
+  //Auto 2 (snellere auto)
+  if (stoplichtStaatOpRood == true && autoX2 >= 900) {
+    autoSnelheid2 = 1;
+  } else {
+    autoSnelheid2 = 3;
+  }
+
+  if (stoplichtStaatOpRood == true && autoX2 >= 1030) {
+    autoSnelheid2 = 0;
   }
 
   // Zon met beweging
@@ -75,6 +173,7 @@ background("lightblue")
   rect(900,740,100,20,20)
   rect(1100,740,100,20,20)
   rect(1300,740,100,20,20)
+  rect(1220,670,20,200)
 
   // strookje gras
   fill("green")
@@ -95,29 +194,114 @@ background("lightblue")
   circle(510,520,100)
 
   // stoplicht
-  strokeWeight(0)
+  strokeWeight(1)
   fill(130)
   rect(1200,560,10,100,50)
   rect(1180,430,50,150)
+  
 
   // lichten voor het stoplicht
-  fill("#2fff00")
-  circle(1205,550,40)
-  fill("#824c00")
-  circle(1205,505,40)
-  fill("#930000")
-  circle(roodX, roodY, rooddiameter);
+  fill(stoplichtRood);
+  ellipse(roodX, roodY, rooddiameter);
+  fill(stoplichtGroen);
+  ellipse(groenX, groenY, groendiameter);
+  fill(stoplichtOranje);
+  ellipse(oranjeX, oranjeY, oranjediameter);
 
-  // wolken
+  // Flitser
+  fill(130);
+  rect(1300, 360, 10, 300, 50);
+  rect(1265, 340, 75, 50, 20); 
+
+  // Flitser
+  fill(130);
+  rect(1300, 360, 10, 300, 50); // Paal van de flitser
+
+  if (flitsTimer > 0) {
+    fill("white"); 
+    flitsTimer = flitsTimer - 1;
+  } else {
+    fill(110); 
+    
+    if (random(100) < 0.5) {
+      flitsTimer = 10;  
+    }
+  }
+  circle(flitsCirkelX, flitsCirkelY, flitsCirkelDiameter);
+
+  fill(130);
+  rect(1265, 340, 75, 50, 20); 
+
+
+
   fill("#ffffff")
-  circle(300,85,70)
-  circle(330,80,70)
-  circle(360,85,70)
+  strokeWeight(0)
+  circle(wolkX1, wolkY1, wolkDiameter1);
+  wolkX1 = wolkX1 + 0.2;
 
-  circle(500,155,70)
-  circle(530,150,70)
-  circle(560,155,70)
+  circle(wolkX2, wolkY2, wolkDiameter2);
+  wolkX2 = wolkX2 + 0.2;
 
+  circle(wolkX3, wolkY3, wolkDiameter3);
+  wolkX3 = wolkX3 + 0.2;
+
+  circle(wolkX4, wolkY4, wolkDiameter4);
+  wolkX4 = wolkX4 + 0.1;
+ 
+  circle(wolkX5, wolkY5, wolkDiameter5);
+  wolkX5 = wolkX5 + 0.1;
+
+  circle(wolkX6, wolkY6, wolkDiameter6);
+  wolkX6 = wolkX6 + 0.1;
+
+ 
+ 
+  // Auto's
+  strokeWeight(1)
+  fill("#00c8ff")
+  rect(autoX, autoY, autoB, autoW);
+  autoX = autoX + autoSnelheid;
+
+  fill("black")
+  circle(wielX3, wielY3, wielDiameter2);
+  wielX3 = wielX3 + autoSnelheid;
+  circle(wielX4, wielY4, wielDiameter3);
+  wielX4 = wielX4 + autoSnelheid;
+
+
+  fill("#ff3333")
+  rect(autoX2, autoY2, autoB2, autoW2);
+  autoX2 = autoX2 + autoSnelheid2;
   
-}
+  fill("black")
+  circle(wielX, wielY, wielDiameter);
+  wielX = wielX + autoSnelheid2;
+  circle(wielX2, wielY2, wielDiameter2);
+  wielX2 = wielX2 + autoSnelheid2;
 
+// Auto's terug laten gaan naar het begin 
+  { 
+  if (autoX > 1600) 
+    autoX = -200
+  }
+  { 
+  if (autoX2 > 1600) 
+    autoX2 = -200
+  }
+  { 
+  if (wielX > 1600) 
+    wielX = -200
+  }
+  { 
+  if (wielX2 > 1600) 
+    wielX2 = -200
+  }
+  { 
+  if (wielX3 > 1600) 
+    wielX3 = -200
+  }
+  { 
+  if (wielX4 > 1600) 
+    wielX4 = -200
+  }
+}
