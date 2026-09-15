@@ -1,16 +1,17 @@
 // Auto 1
 let autoX = 100;
-let autoY = 710;
+let autoY = 690;
 let autoB = 170;
 let autoW = 120;
 let wielX3 = 130;
-let wielY3 = 820;
+let wielY3 = 800;
 let wielDiameter2 = 70;
 let wielX4 = 240;
-let wielY4 = 820;
+let wielY4 = 800;
 let wielDiameter3 = 70;
 
-let autoSnelheid = 2;
+let autoSnelheid = 2.5;
+
 // Auto 2
 let autoX2 = 100;
 let autoY2 = 570;
@@ -53,15 +54,15 @@ let flitserWit;
 // Wolk 1
 let wolkX1 = 300;
 let wolkY1 = 85;
-let wolkDiameter1 = 70;
+let wolkDiameter1 = 50;
 
 let wolkX2 = 330;
 let wolkY2 = 80;
-let wolkDiameter2 = 70;
+let wolkDiameter2 = 50;
 
 let wolkX3 = 360;
 let wolkY3 = 85;
-let wolkDiameter3 = 70;
+let wolkDiameter3 = 50;
 
 // Wolk 2
 let wolkX4 = 500;
@@ -75,6 +76,32 @@ let wolkDiameter5 = 70;
 let wolkX6 = 560;
 let wolkY6 = 155;
 let wolkDiameter6 = 70;
+
+// Wolk 3
+let wolkX7 = 300;
+let wolkY7 = 305;
+let wolkDiameter7 = 110;
+
+let wolkX8 = 330;
+let wolkY8 = 300;
+let wolkDiameter8 = 110;
+
+let wolkX9 = 360;
+let wolkY9 = 305;
+let wolkDiameter9 = 110;
+
+// Wolk 4
+let wolkX10 = 130;
+let wolkY10 = 455;
+let wolkDiameter10 = 80;
+
+let wolkX11 = 160;
+let wolkY11 = 450;
+let wolkDiameter11 = 80;
+
+let wolkX12 = 190;
+let wolkY12 = 455;
+let wolkDiameter12 = 80;
 
 let stoplichtStaatOpRood = false;
 
@@ -90,7 +117,7 @@ function keyPressed() {
       stoplichtRood = color("#ff0000");
       stoplichtOranje = color("#b38900");
       stoplichtStaatOpRood = true;
-    }, 1000);
+    }, 1500);
   }
 }
 
@@ -118,23 +145,23 @@ background("lightblue")
 
   // Auto's stoppen voor het stoplicht
   // Auto 1 (langzame auto)
-  if (stoplichtStaatOpRood == true && autoX >= 900) {
+  if (stoplichtStaatOpRood == true && autoX >= 900 && autoX <= 1029) {
     autoSnelheid = 1;
   } else {
     autoSnelheid = 2;
   }
-  if (stoplichtStaatOpRood == true && autoX >= 1030) {
+  if (stoplichtStaatOpRood == true && autoX >= 1030 && autoX <= 1050) {
     autoSnelheid = 0;
   }
 
   //Auto 2 (snellere auto)
-  if (stoplichtStaatOpRood == true && autoX2 >= 900) {
+  if (stoplichtStaatOpRood == true && autoX2 >= 900 && autoX2 <= 1029) {
     autoSnelheid2 = 1;
   } else {
     autoSnelheid2 = 3;
   }
 
-  if (stoplichtStaatOpRood == true && autoX2 >= 1030) {
+  if (stoplichtStaatOpRood == true && autoX2 >= 1030 && autoX2 <= 1050) {
     autoSnelheid2 = 0;
   }
 
@@ -151,8 +178,21 @@ background("lightblue")
     cirkelX = -100
   }
 
+
+  // 1 wolk die achter de bergen langs gaat
+  strokeWeight(0)
+  fill("white")
+  circle(wolkX10, wolkY10, wolkDiameter10);
+  wolkX10 = wolkX10 + 0.4;
+
+   circle(wolkX11, wolkY11, wolkDiameter11);
+  wolkX11 = wolkX11 + 0.4;
+
+   circle(wolkX12, wolkY12, wolkDiameter12);
+  wolkX12 = wolkX12 + 0.4;
+
   // bergen
-  strokeWeight(1)
+  strokeWeight(10)
   stroke("grey")
   fill(100)
   triangle(30, 775, 258, 250, 500, 775)
@@ -173,11 +213,13 @@ background("lightblue")
   rect(900,740,100,20,20)
   rect(1100,740,100,20,20)
   rect(1300,740,100,20,20)
-  rect(1220,670,20,200)
+  rect(1220,670,10,200)
+  rect(1205,670,10,200)
 
-  // strookje gras
+  // 2 strookjes gras
   fill("green")
   rect(0,620,1400,50)
+  rect(0,850,1500,30)
 
   // boomstammen
   fill("brown")
@@ -222,7 +264,7 @@ background("lightblue")
     flitsTimer = flitsTimer - 1;
   } else {
     fill(110); 
-    
+
     if (random(100) < 0.5) {
       flitsTimer = 10;  
     }
@@ -254,21 +296,19 @@ background("lightblue")
   circle(wolkX6, wolkY6, wolkDiameter6);
   wolkX6 = wolkX6 + 0.1;
 
+   circle(wolkX7, wolkY7, wolkDiameter7);
+  wolkX7 = wolkX7 + 0.15;
+
+   circle(wolkX8, wolkY8, wolkDiameter8);
+  wolkX8 = wolkX8 + 0.15;
+
+   circle(wolkX9, wolkY9, wolkDiameter9);
+  wolkX9 = wolkX9 + 0.15;
+
  
  
   // Auto's
   strokeWeight(1)
-  fill("#00c8ff")
-  rect(autoX, autoY, autoB, autoW);
-  autoX = autoX + autoSnelheid;
-
-  fill("black")
-  circle(wielX3, wielY3, wielDiameter2);
-  wielX3 = wielX3 + autoSnelheid;
-  circle(wielX4, wielY4, wielDiameter3);
-  wielX4 = wielX4 + autoSnelheid;
-
-
   fill("#ff3333")
   rect(autoX2, autoY2, autoB2, autoW2);
   autoX2 = autoX2 + autoSnelheid2;
@@ -278,6 +318,15 @@ background("lightblue")
   wielX = wielX + autoSnelheid2;
   circle(wielX2, wielY2, wielDiameter2);
   wielX2 = wielX2 + autoSnelheid2;
+  fill("#00c8ff")
+  rect(autoX, autoY, autoB, autoW);
+  autoX = autoX + autoSnelheid;
+
+  fill("black")
+  circle(wielX3, wielY3, wielDiameter2);
+  wielX3 = wielX3 + autoSnelheid;
+  circle(wielX4, wielY4, wielDiameter3);
+  wielX4 = wielX4 + autoSnelheid;
 
 // Auto's terug laten gaan naar het begin 
   { 
@@ -304,4 +353,15 @@ background("lightblue")
   if (wielX4 > 1600) 
     wielX4 = -200
   }
+
+
+
+
+  // 1 boom die voor de weg en auto's staat
+  fill("brown")
+  rect(700,760,20,100)
+  stroke("darkgreen")
+  strokeWeight(10)
+  fill("green")
+  circle(710,740,100)
 }
