@@ -59,4 +59,8 @@ function draw() {
   rect(1180,450,50,130)
 
   // lichten voor het stoplicht
+  fill("lightgreen")
+  circle(1205,550,40)
+  fill("orange")
+  circle(1205,510,40)
 }
