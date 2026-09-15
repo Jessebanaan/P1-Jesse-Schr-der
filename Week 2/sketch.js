@@ -57,4 +57,6 @@ function draw() {
   fill(130)
   rect(1200,560,10,100,50)
   rect(1180,450,50,130)
+
+  // lichten voor het stoplicht
 }
