@@ -1,10 +1,57 @@
+// Zon
+let cirkelX = 130;
+let cirkelY = 130;
+let zondiameter = 150;
+
+// Rood stoplicht
+let roodX = 1205;
+let roodY = 460;
+let rooddiameter = 40;
+
+let tint = 0;
+
+let daycolor = ("lightblue");
+let nightcolor = ("black")
 
 function setup() {
-  createCanvas(1400, 870);
+  canvasy = (870)
+  canvasx = (1400)
+  createCanvas(canvasx, canvasy)
 }
 
+function keyPressed() {
+  if (keyCode === 13) {
+    console.log("Enter is ingedrukt");
+  }
+}
+
+function keyReleased() {
+  if (keyCode === 13) {
+    console.log("Enter is losgelaten");
+  }
+}
+
+
 function draw() {
-  background("lightblue");
+background("lightblue")
+  if (millis() > 23500) {
+    background("black");
+  } else {
+    background("lightblue"); 
+  }
+
+  // Zon met beweging
+  fill(255, 255, 0)
+  stroke(255, 215, 140)
+  strokeWeight(10)
+  circle(cirkelX, cirkelY, zondiameter);
+  cirkelX = cirkelX + 1;
+
+  // Zon weer terug laten gaan naar het begin
+ { 
+  if (cirkelX > 1500) 
+    cirkelX = -100
+  }
 
   // bergen
   strokeWeight(1)
@@ -47,20 +94,30 @@ function draw() {
   circle(310,535,100)
   circle(510,520,100)
 
-  // zon
-  fill(255, 255, 0)
-  stroke(255, 215, 140)
-  circle(130,130,150)
-
   // stoplicht
   strokeWeight(0)
   fill(130)
   rect(1200,560,10,100,50)
-  rect(1180,450,50,130)
+  rect(1180,430,50,150)
 
   // lichten voor het stoplicht
-  fill("lightgreen")
+  fill("#2fff00")
   circle(1205,550,40)
-  fill("orange")
-  circle(1205,510,40)
+  fill("#824c00")
+  circle(1205,505,40)
+  fill("#930000")
+  circle(roodX, roodY, rooddiameter);
+
+  // wolken
+  fill("#ffffff")
+  circle(300,85,70)
+  circle(330,80,70)
+  circle(360,85,70)
+
+  circle(500,155,70)
+  circle(530,150,70)
+  circle(560,155,70)
+
+  
 }
+
