@@ -5,10 +5,10 @@ let autoB = 170;
 let autoW = 120;
 let wielX3 = 130;
 let wielY3 = 800;
-let wielDiameter2 = 70;
+let wielDiameter2 = 60;
 let wielX4 = 240;
 let wielY4 = 800;
-let wielDiameter3 = 70;
+let wielDiameter3 = 60;
 
 let autoSnelheid = 3;
 
@@ -19,7 +19,7 @@ let autoB2 = 170;
 let autoW2 = 120;
 let wielX = 130;
 let wielY = 680;
-let wielDiameter = 70;
+let wielDiameter = 60;
 let wielX2 = 240;
 let wielY2 = 680;
 
@@ -191,6 +191,13 @@ background("lightblue")
    circle(wolkX12, wolkY12, wolkDiameter12);
   wolkX12 = wolkX12 + 0.4;
 
+    fill("black")
+  stroke("black")
+  strokeWeight(3)
+  line(290, 250, 285, 295);
+  fill("white")
+  rect(290,250,30,20)
+
   // bergen
   strokeWeight(10)
   stroke("grey")
@@ -344,24 +351,54 @@ background("lightblue")
   if (wolkX6 > 1600) 
     wolkX6 = -200
   }
+    { 
+  if (wolkX7 > 1600) 
+    wolkX7 = -200
+  }
+  { 
+  if (wolkX8 > 1600) 
+    wolkX8 = -200
+  }
+  { 
+  if (wolkX9 > 1600) 
+    wolkX9 = -200
+  }
+    { 
+  if (wolkX10 > 1600) 
+    wolkX10 = -200
+  }
+  { 
+  if (wolkX11 > 1600) 
+    wolkX11 = -200
+  }
+  { 
+  if (wolkX12 > 1600) 
+    wolkX12 = -200
+  }
+  
+  
  
  
   // Auto's
-  strokeWeight(1)
+  strokeWeight(3)
+  stroke(0)
   fill("#ff3333")
-  rect(autoX2, autoY2, autoB2, autoW2);
+  rect(autoX2, autoY2, autoB2, autoW2, 30);
   autoX2 = autoX2 + autoSnelheid2;
+
+    fill("#00c8ff")
+  rect(autoX, autoY, autoB, autoW, 30);
+  autoX = autoX + autoSnelheid;
   
-  fill("black")
+  fill("grey")
+  strokeWeight(10)
   circle(wielX, wielY, wielDiameter);
   wielX = wielX + autoSnelheid2;
   circle(wielX2, wielY2, wielDiameter2);
   wielX2 = wielX2 + autoSnelheid2;
-  fill("#00c8ff")
-  rect(autoX, autoY, autoB, autoW);
-  autoX = autoX + autoSnelheid;
 
-  fill("black")
+  fill("grey")
+  strokeWeight(10)
   circle(wielX3, wielY3, wielDiameter2);
   wielX3 = wielX3 + autoSnelheid;
   circle(wielX4, wielY4, wielDiameter3);
@@ -398,6 +435,7 @@ background("lightblue")
 
   // 1 boom die voor de weg en auto's staat
   fill("brown")
+  strokeWeight(0)
   rect(700,760,20,100)
   stroke("darkgreen")
   strokeWeight(10)
