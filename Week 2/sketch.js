@@ -10,7 +10,7 @@ let wielX4 = 240;
 let wielY4 = 800;
 let wielDiameter3 = 70;
 
-let autoSnelheid = 2.5;
+let autoSnelheid = 3;
 
 // Auto 2
 let autoX2 = 100;
@@ -23,7 +23,7 @@ let wielDiameter = 70;
 let wielX2 = 240;
 let wielY2 = 680;
 
-let autoSnelheid2 = 3;
+let autoSnelheid2 = 4;
 
 // Zon
 let cirkelX = 130;
@@ -146,9 +146,9 @@ background("lightblue")
   // Auto's stoppen voor het stoplicht
   // Auto 1 (langzame auto)
   if (stoplichtStaatOpRood == true && autoX >= 900 && autoX <= 1029) {
-    autoSnelheid = 1;
+    autoSnelheid = 1.5;
   } else {
-    autoSnelheid = 2;
+    autoSnelheid = 3;
   }
   if (stoplichtStaatOpRood == true && autoX >= 1030 && autoX <= 1050) {
     autoSnelheid = 0;
@@ -156,9 +156,9 @@ background("lightblue")
 
   //Auto 2 (snellere auto)
   if (stoplichtStaatOpRood == true && autoX2 >= 900 && autoX2 <= 1029) {
-    autoSnelheid2 = 1;
+    autoSnelheid2 = 2;
   } else {
-    autoSnelheid2 = 3;
+    autoSnelheid2 = 4;
   }
 
   if (stoplichtStaatOpRood == true && autoX2 >= 1030 && autoX2 <= 1050) {
@@ -221,7 +221,21 @@ background("lightblue")
   rect(0,620,1400,50)
   rect(0,850,1500,30)
 
+  // Gebouw
+  strokeWeight(3)
+  stroke("black")
+  fill(100)
+  circle(1030,480,60)
+  rect(1000,480,60,150)
+  fill(255)
+  circle(1030,510,45)
+  line(1030,510,1050,510)
+  line(1030,490,1030,510)
+  
+  
+
   // boomstammen
+  strokeWeight(0)
   fill("brown")
   rect(110,530,20,100)
   rect(300,565,20,100)
@@ -275,36 +289,61 @@ background("lightblue")
   rect(1265, 340, 75, 50, 20); 
 
 
-
+// Wolken
   fill("#ffffff")
   strokeWeight(0)
   circle(wolkX1, wolkY1, wolkDiameter1);
-  wolkX1 = wolkX1 + 0.2;
+  wolkX1 = wolkX1 + 0.3;
 
   circle(wolkX2, wolkY2, wolkDiameter2);
-  wolkX2 = wolkX2 + 0.2;
+  wolkX2 = wolkX2 + 0.3;
 
   circle(wolkX3, wolkY3, wolkDiameter3);
-  wolkX3 = wolkX3 + 0.2;
+  wolkX3 = wolkX3 + 0.3;
 
   circle(wolkX4, wolkY4, wolkDiameter4);
-  wolkX4 = wolkX4 + 0.1;
+  wolkX4 = wolkX4 + 0.2;
  
   circle(wolkX5, wolkY5, wolkDiameter5);
-  wolkX5 = wolkX5 + 0.1;
+  wolkX5 = wolkX5 + 0.2;
 
   circle(wolkX6, wolkY6, wolkDiameter6);
-  wolkX6 = wolkX6 + 0.1;
+  wolkX6 = wolkX6 + 0.2;
 
    circle(wolkX7, wolkY7, wolkDiameter7);
-  wolkX7 = wolkX7 + 0.15;
+  wolkX7 = wolkX7 + 0.25;
 
    circle(wolkX8, wolkY8, wolkDiameter8);
-  wolkX8 = wolkX8 + 0.15;
+  wolkX8 = wolkX8 + 0.25;
 
    circle(wolkX9, wolkY9, wolkDiameter9);
-  wolkX9 = wolkX9 + 0.15;
+  wolkX9 = wolkX9 + 0.25;
 
+  // Wolken terug laten gaan naar het begin
+  { 
+  if (wolkX1 > 1600) 
+    wolkX1 = -200
+  }
+  { 
+  if (wolkX2 > 1600) 
+    wolkX2 = -200
+  }
+  { 
+  if (wolkX3 > 1600) 
+    wolkX3 = -200
+  }
+    { 
+  if (wolkX4 > 1600) 
+    wolkX4 = -200
+  }
+  { 
+  if (wolkX5 > 1600) 
+    wolkX5 = -200
+  }
+  { 
+  if (wolkX6 > 1600) 
+    wolkX6 = -200
+  }
  
  
   // Auto's
