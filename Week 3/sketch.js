@@ -1,6 +1,11 @@
 // Spel variablene
 let beurt = "red";
 let gameOver = false;
+let gelijkspel = false
+
+// Cursor kleur
+let cursorBlue = ("blue")
+let cursorRed = ("red")
 
 // Vakjes variabelen
 let rectW = 80;
@@ -39,9 +44,12 @@ let playAgainText = "Play again";
 let redsTurn = ("Reds turn");
 let bluesTurn = ("Blue's turn");
 
+
 function setup() {
   createCanvas(400, 400);
 }
+
+
 
 function draw() {
   background(220);
@@ -82,19 +90,29 @@ function draw() {
   fill(vak9Kleur);
   rect(vak9X, vak9Y, rectW, rectH, 10);
 
-  // Laat de tekst en knop verschijnen wanneer het spel klaar is
-  if (gameOver == true) {
-    textSize(30)
-    fill(255)
-    stroke(10)
-    text("Game finished", 100, 35)
-    // Play again knop
-   fill("#37ff00")
-    rect(playAgainX, playAgainY, playAgainW, playAgainH, 5)
-    fill("white")
-    textSize(20)
-    text(playAgainText, 150, 370)
+// Game over of draw
+if (gameOver == true) {
+  textSize(30);
+  fill(255);
+  stroke(10);
+  
+  // Check of het gelijkspel was of dat iemand gewonnen heeft
+  if (gelijkspel == true) {
+    text("Draw!", 160, 35);
+    stroke("black")
+  } else {
+    text("Game finished", 100, 35);
   }
+
+  // Play again knop
+  fill("#37ff00");
+  stroke("#2dcf00");
+  rect(playAgainX, playAgainY, playAgainW, playAgainH, 5);
+  fill("white");
+  textSize(20);
+  stroke(0);
+  text(playAgainText, 150, 370);
+}
 
   // Laat zien welke speler aan de beurt is
   if (beurt == "red") {
@@ -102,22 +120,38 @@ function draw() {
     fill(255)
     stroke(10)
     text(redsTurn, 130, 35)
+
+    strokeWeight(3);
+    stroke(0)
+    fill(cursorRed);
+    stroke("#ff7070")
+    circle(mouseX, mouseY, 15);
+
   } else {
     textSize(30)
     fill(255)
     stroke(10)
     text(bluesTurn, 130, 35)
+    
+    strokeWeight(3);
+    stroke("#4659ff")
+    fill(cursorBlue);
+    circle(mouseX, mouseY, 15);
   }
+
+  stroke(0)
+
 
   if (gameOver == true) {
     redsTurn = ("");
     bluesTurn = ("");
+
+    stroke("#37ff00")
   }
 
-  // Muisstip
-  strokeWeight(3);
-  fill("white");
-  circle(mouseX, mouseY, 10);
+  if (gelijkspel == true) {
+    stroke(0)
+  }
 }
 
 function mousePressed(){
@@ -194,6 +228,24 @@ if (
   gameOver = true;
 }
 
+// Gelijkspel
+if (
+  vak1Kleur != "grey" && 
+  vak2Kleur != "grey" && 
+  vak3Kleur != "grey" && 
+  vak4Kleur != "grey" && 
+  vak5Kleur != "grey" && 
+  vak6Kleur != "grey" && 
+  vak7Kleur != "grey" && 
+  vak8Kleur != "grey" && 
+  vak9Kleur != "grey"
+) {
+  if (gameOver == false) {
+    gameOver = true;
+    gelijkspel = true;
+  }
+}
+
 // Wissel de beurt om elke keer dat er op een vakje word gedrukt
   if (beurt == "red") {
     beurt = "blue";
@@ -221,6 +273,7 @@ function resetGame(){
   vak9Kleur = "grey";
 
   gameOver = false;
+  gelijkspel = false
 
   beurt = "red";
 
