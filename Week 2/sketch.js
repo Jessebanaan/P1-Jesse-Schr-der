@@ -178,7 +178,6 @@ background("lightblue")
     cirkelX = -100
   }
 
-
   // 1 wolk die achter de bergen langs gaat
   strokeWeight(0)
   fill("white")
@@ -238,8 +237,6 @@ background("lightblue")
   circle(1030,510,45)
   line(1030,510,1050,510)
   line(1030,490,1030,510)
-  
-  
 
   // boomstammen
   strokeWeight(0)
@@ -261,7 +258,6 @@ background("lightblue")
   fill(130)
   rect(1200,560,10,100,50)
   rect(1180,430,50,150)
-  
 
   // lichten voor het stoplicht
   fill(stoplichtRood);
@@ -294,7 +290,6 @@ background("lightblue")
 
   fill(130);
   rect(1265, 340, 75, 50, 20); 
-
 
 // Wolken
   fill("#ffffff")
@@ -375,9 +370,6 @@ background("lightblue")
   if (wolkX12 > 1600) 
     wolkX12 = -200
   }
-  
-  
- 
  
   // Auto's
   strokeWeight(3)
@@ -386,16 +378,17 @@ background("lightblue")
   rect(autoX2, autoY2, autoB2, autoW2, 30);
   autoX2 = autoX2 + autoSnelheid2;
 
-    fill("#00c8ff")
-  rect(autoX, autoY, autoB, autoW, 30);
-  autoX = autoX + autoSnelheid;
-  
   fill("grey")
   strokeWeight(10)
   circle(wielX, wielY, wielDiameter);
   wielX = wielX + autoSnelheid2;
   circle(wielX2, wielY2, wielDiameter2);
   wielX2 = wielX2 + autoSnelheid2;
+
+  strokeWeight(3)
+  fill("#00c8ff")
+  rect(autoX, autoY, autoB, autoW, 30);
+  autoX = autoX + autoSnelheid;
 
   fill("grey")
   strokeWeight(10)
@@ -429,9 +422,6 @@ background("lightblue")
   if (wielX4 > 1600) 
     wielX4 = -200
   }
-
-
-
 
   // 1 boom die voor de weg en auto's staat
   fill("brown")

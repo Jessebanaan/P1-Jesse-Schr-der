@@ -7,6 +7,9 @@ let ballX = 500;
 let ballY = 200; 
 let acht = 8;
 
+let a;
+let b;
+
 let lichtStatus = 0;
 
 function setup() {
