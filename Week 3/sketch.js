@@ -3,6 +3,11 @@ let beurt = "red";
 let gameOver = false;
 let gelijkspel = false
 
+//Tijd variabelen
+let maxTijd = 5;
+let startTijd = 0;
+let overigeTijd = 5;
+
 // Cursor kleur
 let cursorBlue = ("blue")
 let cursorRed = ("red")
@@ -44,6 +49,12 @@ let playAgainText = "Play again";
 let redsTurn = ("Reds turn");
 let bluesTurn = ("Blue's turn");
 
+// Geluiden
+let klikGeluid;
+
+function preload() {
+  klikGeluid = loadSound('../sounds/klik.mp3');
+}
 
 function setup() {
   createCanvas(400, 400);
@@ -60,9 +71,12 @@ function draw() {
   rect(0, 0, 200, 400);
   fill("red");
   rect(195, 0, 210, 400);
+  fill("#000000")
+  rect(40,40,300,300,10)
 
   // Vakjes tekenen
   strokeWeight(5);
+  stroke(150)
   fill(vak1Kleur);
   rect(vak1X, vak1Y, rectW, rectH, 10);
 
@@ -90,6 +104,24 @@ function draw() {
   fill(vak9Kleur);
   rect(vak9X, vak9Y, rectW, rectH, 10);
 
+  // Teken de timer
+  fill(255)
+  strokeWeight(5)
+  text(overigeTijd, 15, 200)
+
+  if (gameOver == false) {
+    let verstreken = (millis() - startTijd) / 1000
+    overigeTijd = ceil (maxTijd - verstreken)
+    
+    if (overigeTijd <= 0) {
+      if (beurt == "red") {
+        beurt = "blue";
+      } else {
+        beurt = "red";
+      }
+      startTijd = millis()
+    }
+  }
 // Game over of draw
 if (gameOver == true) {
   textSize(30);
@@ -112,6 +144,8 @@ if (gameOver == true) {
   textSize(20);
   stroke(0);
   text(playAgainText, 150, 370);
+
+  overigeTijd = "";
 }
 
   // Laat zien welke speler aan de beurt is
@@ -170,46 +204,55 @@ function mousePressed(){
 
   if (mouseX > vak1X && mouseX < vak1X + rectW && mouseY > vak1Y && mouseY < vak1Y + rectH && vak1Kleur == "grey") {
     vak1Kleur = beurt;
+    klikGeluid.play();
   }
 
   // VAK 2
   if (mouseX > vak2X && mouseX < vak2X + rectW && mouseY > vak2Y && mouseY < vak2Y + rectH && vak2Kleur == "grey") {
     vak2Kleur = beurt;
+    klikGeluid.play();
   }
 
     // VAK 3
   if (mouseX > vak3X && mouseX < vak3X + rectW && mouseY > vak3Y && mouseY < vak3Y + rectH && vak3Kleur == "grey") {
     vak3Kleur = beurt;
+    klikGeluid.play();
   }
 
     // VAK 4
   if (mouseX > vak4X && mouseX < vak4X + rectW && mouseY > vak4Y && mouseY < vak4Y + rectH && vak4Kleur == "grey") {
     vak4Kleur = beurt;
+    klikGeluid.play();
   }
 
     // VAK 5
   if (mouseX > vak5X && mouseX < vak5X + rectW && mouseY > vak5Y && mouseY < vak5Y + rectH && vak5Kleur == "grey") {
     vak5Kleur = beurt;
+    klikGeluid.play();
   }
 
     // VAK 6
   if (mouseX > vak6X && mouseX < vak6X + rectW && mouseY > vak6Y && mouseY < vak6Y + rectH && vak6Kleur == "grey") {
     vak6Kleur = beurt;
+    klikGeluid.play();
   }
 
     // VAK 7
   if (mouseX > vak7X && mouseX < vak7X + rectW && mouseY > vak7Y && mouseY < vak7Y + rectH && vak7Kleur == "grey") {
     vak7Kleur = beurt;
+    klikGeluid.play();
   }
 
     // VAK 8
   if (mouseX > vak8X && mouseX < vak8X + rectW && mouseY > vak8Y && mouseY < vak8Y + rectH && vak8Kleur == "grey") {
     vak8Kleur = beurt;
+    klikGeluid.play();
   }
 
     // VAK 9
   if (mouseX > vak9X && mouseX < vak9X + rectW && mouseY > vak9Y && mouseY < vak9Y + rectH && vak9Kleur == "grey") {
     vak9Kleur = beurt;
+    klikGeluid.play();
   }
 
   // Alle mogelijke combinaties die er zijn gebruiken om het spel te spelen
@@ -254,6 +297,9 @@ if (
     beurt = "red";
     text("Reds turn", 150, 30)
   }
+
+
+  startTijd = millis();
 }
 
 function mouseReleased(){
@@ -279,4 +325,6 @@ function resetGame(){
 
   redsTurn = ("Reds turn")
   bluesTurn = ("Blue's turn")
+
+  startTijd = millis();
 }
