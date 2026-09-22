@@ -31,9 +31,13 @@ let vak9X = 250; let vak9Y = 250;
 // Play again knop
 let playAgainX = 135;
 let playAgainY = 345;
-let playAgainW = 40;
-let playAgainH = 120;
+let playAgainH = 40;
+let playAgainW = 120;
 let playAgainText = "Play again";
+
+// Beurt tekst
+let redsTurn = ("Reds turn");
+let bluesTurn = ("Blue's turn");
 
 function setup() {
   createCanvas(400, 400);
@@ -86,10 +90,28 @@ function draw() {
     text("Game finished", 100, 35)
     // Play again knop
    fill("#37ff00")
-    rect(playAgainX, playAgainY, playAgainH, playAgainW, 5)
+    rect(playAgainX, playAgainY, playAgainW, playAgainH, 5)
     fill("white")
     textSize(20)
     text(playAgainText, 150, 370)
+  }
+
+  // Laat zien welke speler aan de beurt is
+  if (beurt == "red") {
+    textSize(30)
+    fill(255)
+    stroke(10)
+    text(redsTurn, 130, 35)
+  } else {
+    textSize(30)
+    fill(255)
+    stroke(10)
+    text(bluesTurn, 130, 35)
+  }
+
+  if (gameOver == true) {
+    redsTurn = ("");
+    bluesTurn = ("");
   }
 
   // Muisstip
@@ -99,7 +121,17 @@ function draw() {
 }
 
 function mousePressed(){
-  if (gameOver == true) { return; }
+
+  if (gameOver == true) {
+    if (
+      mouseX > playAgainX && mouseX < playAgainX + playAgainW &&
+      mouseY > playAgainY && mouseY < playAgainY + playAgainH
+    ) {
+      resetGame(); 
+      return;
+    }
+    return; 
+  }
 
 
   if (mouseX > vak1X && mouseX < vak1X + rectW && mouseY > vak1Y && mouseY < vak1Y + rectH && vak1Kleur == "grey") {
@@ -162,18 +194,36 @@ if (
   gameOver = true;
 }
 
-  if (mouseX > playAgainX && mouseX < playAgainX + playAgainW && mouseY > playAgainY && mouseY < playAgainY + playAgainH) {
-    gameOver = false;
-  }
-
 // Wissel de beurt om elke keer dat er op een vakje word gedrukt
   if (beurt == "red") {
     beurt = "blue";
+    text("Blue's turn", 150, 30)
   } else {
     beurt = "red";
+    text("Reds turn", 150, 30)
   }
 }
 
 function mouseReleased(){
 
+}
+
+// Aparte functie om het spel te laten resetten wanneer het klaar is
+function resetGame(){
+  vak1Kleur = "grey";
+  vak2Kleur = "grey";
+  vak3Kleur = "grey";
+  vak4Kleur = "grey";
+  vak5Kleur = "grey";
+  vak6Kleur = "grey";
+  vak7Kleur = "grey";
+  vak8Kleur = "grey";
+  vak9Kleur = "grey";
+
+  gameOver = false;
+
+  beurt = "red";
+
+  redsTurn = ("Reds turn")
+  bluesTurn = ("Blue's turn")
 }
