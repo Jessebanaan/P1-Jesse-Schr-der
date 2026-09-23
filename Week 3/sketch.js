@@ -52,12 +52,18 @@ let bluesTurn = ("Blue's turn");
 // Geluiden
 let klikGeluid;
 
-function preload() {
+function setup() {
+  createCanvas(400, 400);
+
+  // Geluid laden in setup, zodat het spel niet blijft hangen als het bestand ontbreekt
   klikGeluid = loadSound('../sounds/klik.mp3');
 }
 
-function setup() {
-  createCanvas(400, 400);
+// Speel het klik geluid alleen af als het geladen is
+function speelKlik() {
+  if (klikGeluid && klikGeluid.isLoaded()) {
+    klikGeluid.play();
+  }
 }
 
 
@@ -199,61 +205,77 @@ function mousePressed(){
       resetGame(); 
       return;
     }
-    return; 
+    return;
   }
 
+  // Houdt bij of er deze klik een vakje is ingekleurd
+  let geplaatst = false;
 
   if (mouseX > vak1X && mouseX < vak1X + rectW && mouseY > vak1Y && mouseY < vak1Y + rectH && vak1Kleur == "grey") {
     vak1Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
   // VAK 2
   if (mouseX > vak2X && mouseX < vak2X + rectW && mouseY > vak2Y && mouseY < vak2Y + rectH && vak2Kleur == "grey") {
     vak2Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
     // VAK 3
   if (mouseX > vak3X && mouseX < vak3X + rectW && mouseY > vak3Y && mouseY < vak3Y + rectH && vak3Kleur == "grey") {
     vak3Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
     // VAK 4
   if (mouseX > vak4X && mouseX < vak4X + rectW && mouseY > vak4Y && mouseY < vak4Y + rectH && vak4Kleur == "grey") {
     vak4Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
     // VAK 5
   if (mouseX > vak5X && mouseX < vak5X + rectW && mouseY > vak5Y && mouseY < vak5Y + rectH && vak5Kleur == "grey") {
     vak5Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
     // VAK 6
   if (mouseX > vak6X && mouseX < vak6X + rectW && mouseY > vak6Y && mouseY < vak6Y + rectH && vak6Kleur == "grey") {
     vak6Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
     // VAK 7
   if (mouseX > vak7X && mouseX < vak7X + rectW && mouseY > vak7Y && mouseY < vak7Y + rectH && vak7Kleur == "grey") {
     vak7Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
     // VAK 8
   if (mouseX > vak8X && mouseX < vak8X + rectW && mouseY > vak8Y && mouseY < vak8Y + rectH && vak8Kleur == "grey") {
     vak8Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
   }
 
     // VAK 9
   if (mouseX > vak9X && mouseX < vak9X + rectW && mouseY > vak9Y && mouseY < vak9Y + rectH && vak9Kleur == "grey") {
     vak9Kleur = beurt;
-    klikGeluid.play();
+    speelKlik();
+    geplaatst = true;
+  }
+
+  // Als er naast het bord of op een vol vakje is geklikt, gebeurt er niks
+  if (geplaatst == false) {
+    return;
   }
 
   // Alle mogelijke combinaties die er zijn gebruiken om het spel te spelen
