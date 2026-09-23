@@ -107,6 +107,7 @@ function draw() {
   // Teken de timer
   fill(255)
   strokeWeight(5)
+  stroke(0)
   text(overigeTijd, 15, 200)
 
   if (gameOver == false) {
