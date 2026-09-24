@@ -52,11 +52,17 @@ let bluesTurn = ("Blue's turn");
 // Geluiden
 let klikGeluid;
 
+let img;
+
+function preload() {
+  img = loadImage("Boterkaaseneieren.png-1600x900.png");
+}
+
 function setup() {
   createCanvas(400, 400);
 
   // Geluid laden in setup, zodat het spel niet blijft hangen als het bestand ontbreekt
-  klikGeluid = loadSound('../sounds/klik.mp3');
+  klikGeluid = loadSound('klik.mp3');
 }
 
 // Speel het klik geluid alleen af als het geladen is
@@ -64,21 +70,13 @@ function speelKlik() {
   if (klikGeluid && klikGeluid.isLoaded()) {
     klikGeluid.play();
   }
-}
-
-
+} 
 
 function draw() {
   background(220);
 
-  // Achtergrond van het veld
-  strokeWeight(0);
-  fill("blue");
-  rect(0, 0, 200, 400);
-  fill("red");
-  rect(195, 0, 210, 400);
-  fill("#000000")
-  rect(40,40,300,300,10)
+  // Achtergrond
+  image(img, 0, 0, 400, 400);
 
   // Vakjes tekenen
   strokeWeight(5);
