@@ -1,36 +1,33 @@
-
-// Spel variablene
-let beurt = "";
+// Spel variabelen
+let spelGestart = false; // Voor kleurselectie scherm
+let beurt = "red";
 let gameOver = false;
-let gelijkspel = false
+let gelijkspel = false;
+let winLijn = null; // Slaat de coÃ¶rdinaten op van de winnende streep
 
-//Tijd variabelen
+// Tijd variabelen
 let maxTijd = 5;
 let startTijd = 0;
 let overigeTijd = 5;
 
-// Kleur selectie
-let kleurKiezen = true;
-let kiezendeSpeler = 1;
-let speler1Kleur = "";
-let speler2Kleur = "";
-let kleuren = ["red", "blue", "green", "orange", "purple", "hotpink"];
-let kleurVakGrootte = 40;
-let kleurVakY = 200;
+// Speler kleuren (instelbaar via kleurselectie)
+let speler1Kleur = "red";
+let speler2Kleur = "blue";
+let beschikbareKleuren = ["red", "blue", "green", "orange", "purple"];
 
 // Vakjes variabelen
 let rectW = 80;
 let rectH = 80;
 
-let vak1Kleur = ("grey");
-let vak2Kleur = ("grey");
-let vak3Kleur = ("grey");
-let vak4Kleur = ("grey");
-let vak5Kleur = ("grey");
-let vak6Kleur = ("grey");
-let vak7Kleur = ("grey");
-let vak8Kleur = ("grey");
-let vak9Kleur = ("grey");
+let vak1Kleur = "grey";
+let vak2Kleur = "grey";
+let vak3Kleur = "grey";
+let vak4Kleur = "grey";
+let vak5Kleur = "grey";
+let vak6Kleur = "grey";
+let vak7Kleur = "grey";
+let vak8Kleur = "grey";
+let vak9Kleur = "grey";
 
 let vak1X = 50;  let vak1Y = 50;
 let vak2X = 150; let vak2Y = 50;
@@ -44,24 +41,19 @@ let vak7X = 50;  let vak7Y = 250;
 let vak8X = 150; let vak8Y = 250;
 let vak9X = 250; let vak9Y = 250;
 
-// Win streep
-let lijnStartX = 0; let lijnStartY = 0;
-let lijnEindX = 0;  let lijnEindY = 0;
+// Knop variabelen (Eindscherm)
+let playAgainX = 55;
+let playAgainY = 340;
+let playAgainW = 130;
+let playAgainH = 45;
 
-// Play again knop
-let playAgainX = 135;
-let playAgainY = 345;
-let playAgainH = 40;
-let playAgainW = 120;
-let playAgainText = "opnieuw";
+let changeColorX = 215;
+let changeColorY = 340;
+let changeColorW = 130;
+let changeColorH = 45;
 
-// Beurt tekst
-let speler1Beurt = ("speler 1 is aan zet");
-let speler2Beurt = ("speler 2 is aan zet");
-
-// Geluiden
+// Geluiden & Afbeelding
 let klikGeluid;
-
 let img;
 
 function preload() {
@@ -70,349 +62,269 @@ function preload() {
 
 function setup() {
   createCanvas(400, 400);
-
-  // Geluid laden in setup, zodat het spel niet blijft hangen als het bestand ontbreekt
-  klikGeluid = loadSound("klik.ogg");
+  klikGeluid = loadSound('klik.ogg');
 }
 
-// Speel het klik geluid alleen af als het geladen is
 function speelKlik() {
   if (klikGeluid && klikGeluid.isLoaded()) {
     klikGeluid.play();
   }
-}
-
-// Tekent een vakje en maakt het groter als je erover hovert en het nog vrij is
-function tekenVak(x, y, kleur) {
-  if (mouseX > x && mouseX < x + rectW && mouseY > y && mouseY < y + rectH && kleur == "grey" && gameOver == false) {
-    fill(lerpColor(color("grey"), color(beurt), 0.4));
-    rect(x - 5, y - 5, rectW + 10, rectH + 10, 10);
-  } else {
-    fill(kleur);
-    rect(x, y, rectW, rectH, 10);
-  }
-}
+} 
 
 function draw() {
   background(220);
 
-  // Achtergrond
+  // KLEURSELECTIE SCHERM VOOR START SPEL
+  if (!spelGestart) {
+    tekenKleurSelectie();
+    return;
+  }
+
+  // ACHTERGROND & DYNAMISCHE RAND
   image(img, 0, 0, 400, 400);
+  
+  // Achtergrondindicatie voor wie aan de beurt is
+  noFill();
+  strokeWeight(15);
+  stroke(beurt);
+  rect(0, 0, width, height);
 
-  // Kleur selectie scherm voordat het spel begint
-  if (kleurKiezen == true) {
-    noStroke();
-    fill(0, 150);
-    rect(0, 0, 400, 400);
+  // VAKJES TEKENEN MET HOVER EFFECT
+  tekenVakje(vak1X, vak1Y, vak1Kleur);
+  tekenVakje(vak2X, vak2Y, vak2Kleur);
+  tekenVakje(vak3X, vak3Y, vak3Kleur);
+  tekenVakje(vak4X, vak4Y, vak4Kleur);
+  tekenVakje(vak5X, vak5Y, vak5Kleur);
+  tekenVakje(vak6X, vak6Y, vak6Kleur);
+  tekenVakje(vak7X, vak7Y, vak7Kleur);
+  tekenVakje(vak8X, vak8Y, vak8Kleur);
+  tekenVakje(vak9X, vak9Y, vak9Kleur);
 
-    textSize(26);
-    fill(255);
-    stroke(0);
-    strokeWeight(5);
-    text("speler " + kiezendeSpeler + " kies een kleur", 55, 150);
-
-    for (let i = 0; i < kleuren.length; i++) {
-      let x = 30 + i * 60;
-
-      // De kleur van speler 1 is doorzichtig want die kan speler 2 niet meer kiezen
-      let vakKleur = color(kleuren[i]);
-      if (kleuren[i] == speler1Kleur) {
-        vakKleur.setAlpha(50);
-      }
-
-      fill(vakKleur);
-      stroke(255);
-      strokeWeight(3);
-      rect(x, kleurVakY, kleurVakGrootte, kleurVakGrootte, 10);
-    }
-    return;
-  }
-
-  // Achtergrond krijgt de kleur van wie er aan de beurt is
-  let achtergrondKleur = color(beurt);
-  achtergrondKleur.setAlpha(90);
-  noStroke();
-  fill(achtergrondKleur);
-  rect(0, 0, 400, 400);
-
-  // Vakjes tekenen
-  strokeWeight(5);
-  stroke(150)
-  tekenVak(vak1X, vak1Y, vak1Kleur);
-  tekenVak(vak2X, vak2Y, vak2Kleur);
-  tekenVak(vak3X, vak3Y, vak3Kleur);
-  tekenVak(vak4X, vak4Y, vak4Kleur);
-  tekenVak(vak5X, vak5Y, vak5Kleur);
-  tekenVak(vak6X, vak6Y, vak6Kleur);
-  tekenVak(vak7X, vak7Y, vak7Kleur);
-  tekenVak(vak8X, vak8Y, vak8Kleur);
-  tekenVak(vak9X, vak9Y, vak9Kleur);
-
-  // Streep door het midden van de winnende vakjes
-  if (gameOver == true && gelijkspel == false) {
-    let startX = lijnStartX + rectW / 2;
-    let startY = lijnStartY + rectH / 2;
-    let eindX = lijnEindX + rectW / 2;
-    let eindY = lijnEindY + rectH / 2;
-
-    stroke(255);
-    strokeWeight(14);
-    line(startX, startY, eindX, eindY);
-    stroke(0);
-    strokeWeight(6);
-    line(startX, startY, eindX, eindY);
-  }
-
-  // Teken de timer
-  fill(255)
-  strokeWeight(5)
-  stroke(0)
-  text(overigeTijd, 15, 200)
-
-  if (gameOver == false) {
-    let verstreken = (millis() - startTijd) / 1000
-    overigeTijd = ceil (maxTijd - verstreken)
-
-    if (overigeTijd <= 0) {
-      if (beurt == speler1Kleur) {
-        beurt = speler2Kleur;
-      } else {
-        beurt = speler1Kleur;
-      }
-      startTijd = millis()
-    }
-  }
-// Game over of draw
-if (gameOver == true) {
-  textSize(30);
+  // TIMER
   fill(255);
-  stroke(10);
-
-  // Check of het gelijkspel was of dat iemand gewonnen heeft
-  if (gelijkspel == true) {
-    text("gelijkspel", 125, 35);
-    stroke("black")
-  } else {
-    text("spel afgelopen", 95, 35);
-  }
-
-  // Play again knop
-  fill("#37ff00");
-  stroke("#2dcf00");
-  rect(playAgainX, playAgainY, playAgainW, playAgainH, 5);
-  fill("white");
-  textSize(20);
+  strokeWeight(5);
   stroke(0);
-  text(playAgainText, 160, 370);
+  textSize(20);
+  textAlign(LEFT, BASELINE);
+  text(overigeTijd, 15, 200);
 
-  overigeTijd = "";
-}
-
-  // Laat zien welke speler aan de beurt is
   if (gameOver == false) {
-    textSize(30)
-    fill(255)
-    stroke(10)
-    if (beurt == speler1Kleur) {
-      text(speler1Beurt, 65, 35)
-    } else {
-      text(speler2Beurt, 65, 35)
+    let verstreken = (millis() - startTijd) / 1000;
+    overigeTijd = ceil(maxTijd - verstreken);
+    
+    if (overigeTijd <= 0) {
+      beurt = (beurt == speler1Kleur) ? speler2Kleur : speler1Kleur;
+      startTijd = millis();
     }
   }
 
-  // Cursor in de kleur van wie er aan de beurt is
-  strokeWeight(3);
-  stroke(255);
-  fill(beurt);
-  circle(mouseX, mouseY, 15);
+  // WINSTINDICATIE STREEP
+  if (winLijn) {
+    stroke(255, 215, 0); // Goudkleurige streep
+    strokeWeight(10);
+    line(winLijn.x1, winLijn.y1, winLijn.x2, winLijn.y2);
+  }
+
+  // GAME OVER / EINDE SCHERM
+  if (gameOver == true) {
+    textSize(30);
+    fill(255);
+    stroke(10);
+    textAlign(CENTER, CENTER);
+    
+    if (gelijkspel == true) {
+      text("Draw!", 200, 35);
+    } else {
+      text("Game finished", 200, 35);
+    }
+
+    // 1. Play again knop (Groen)
+    fill("#37ff00");
+    stroke("#2dcf00");
+    strokeWeight(3);
+    rect(playAgainX, playAgainY, playAgainW, playAgainH, 8);
+    
+    fill("white");
+    textSize(16);
+    stroke(0);
+    text("Opnieuw", playAgainX + playAgainW / 2, playAgainY + playAgainH / 2);
+
+    // 2. Kies nieuwe kleur knop (Blauw)
+    fill("#008cff");
+    stroke("#0066cc");
+    strokeWeight(3);
+    rect(changeColorX, changeColorY, changeColorW, changeColorH, 8);
+    
+    fill("white");
+    textSize(16);
+    stroke(0);
+    text("Kleur kiezen", changeColorX + changeColorW / 2, changeColorY + changeColorH / 2);
+
+    textAlign(LEFT, BASELINE);
+    overigeTijd = "";
+  } else {
+    // BEURT TEKST EN CURSOR
+    textSize(30);
+    fill(255);
+    stroke(10);
+    textAlign(CENTER, CENTER);
+    text(beurt.toUpperCase() + "'s turn", 200, 35);
+    textAlign(LEFT, BASELINE);
+
+    strokeWeight(3);
+    stroke(0);
+    fill(beurt);
+    circle(mouseX, mouseY, 15);
+  }
 }
 
-function mousePressed(){
+// HOVER EFFECT FUNCTIE
+function tekenVakje(x, y, kleur) {
+  strokeWeight(5);
+  stroke(150);
+  
+  // Check hover op een leeg vakje
+  if (kleur == "grey" && mouseX > x && mouseX < x + rectW && mouseY > y && mouseY < y + rectH) {
+    fill(200, 200, 255); // Lichte highlight bij hover
+  } else {
+    fill(kleur);
+  }
+  
+  rect(x, y, rectW, rectH, 10);
+}
 
-  // Kleur kiezen waarbij speler 2 niet dezelfde kleur als speler 1 kan kiezen
-  if (kleurKiezen == true) {
-    for (let i = 0; i < kleuren.length; i++) {
-      let x = 30 + i * 60;
+// KLEURSELECTIE SCHERM
+function tekenKleurSelectie() {
+  background(40);
+  textAlign(CENTER, CENTER);
+  fill(255);
+  noStroke();
+  textSize(22);
+  text("Kies Speler 1 Kleur:", 200, 50);
+  
+  for (let i = 0; i < beschikbareKleuren.length; i++) {
+    fill(beschikbareKleuren[i]);
+    if (speler1Kleur == beschikbareKleuren[i]) stroke(255); else stroke(0);
+    strokeWeight(speler1Kleur == beschikbareKleuren[i] ? 4 : 1);
+    rect(45 + i * 65, 75, 50, 50, 8);
+  }
 
-      if (
-        mouseX > x && mouseX < x + kleurVakGrootte &&
-        mouseY > kleurVakY && mouseY < kleurVakY + kleurVakGrootte &&
-        kleuren[i] != speler1Kleur
-      ) {
-        if (kiezendeSpeler == 1) {
-          speler1Kleur = kleuren[i];
-          kiezendeSpeler = 2;
-        } else {
-          speler2Kleur = kleuren[i];
-          kleurKiezen = false;
+  fill(255);
+  noStroke();
+  text("Kies Speler 2 Kleur:", 200, 180);
+
+  for (let i = 0; i < beschikbareKleuren.length; i++) {
+    fill(beschikbareKleuren[i]);
+    if (speler2Kleur == beschikbareKleuren[i]) stroke(255); else stroke(0);
+    strokeWeight(speler2Kleur == beschikbareKleuren[i] ? 4 : 1);
+    rect(45 + i * 65, 205, 50, 50, 8);
+  }
+
+  // Start knop
+  fill("#37ff00");
+  stroke(0);
+  strokeWeight(2);
+  rect(135, 310, 130, 45, 10);
+  fill(0);
+  noStroke();
+  textSize(20);
+  text("Start Spel", 200, 332);
+  textAlign(LEFT, BASELINE);
+}
+
+function mousePressed() {
+  // KLEURSELECTIE LOGICA
+  if (!spelGestart) {
+    for (let i = 0; i < beschikbareKleuren.length; i++) {
+      let x = 45 + i * 65;
+      if (mouseX > x && mouseX < x + 50) {
+        if (mouseY > 75 && mouseY < 125 && beschikbareKleuren[i] != speler2Kleur) {
+          speler1Kleur = beschikbareKleuren[i];
           beurt = speler1Kleur;
-          startTijd = millis();
         }
-        speelKlik();
-        return;
+        if (mouseY > 205 && mouseY < 255 && beschikbareKleuren[i] != speler1Kleur) {
+          speler2Kleur = beschikbareKleuren[i];
+        }
       }
+    }
+    
+    // Klik op Start Spel
+    if (mouseX > 135 && mouseX < 265 && mouseY > 310 && mouseY < 355) {
+      spelGestart = true;
+      startTijd = millis();
     }
     return;
   }
 
+  // EINDESCHERM KNOPPEN
   if (gameOver == true) {
+    // 1. Klik op "Opnieuw" (Direct nog een potje met dezelfde kleuren)
     if (
       mouseX > playAgainX && mouseX < playAgainX + playAgainW &&
       mouseY > playAgainY && mouseY < playAgainY + playAgainH
     ) {
+      resetGame(); 
+      return;
+    }
+
+    // 2. Klik op "Kleur kiezen" (Terug naar het kleurselectiescherm)
+    if (
+      mouseX > changeColorX && mouseX < changeColorX + changeColorW &&
+      mouseY > changeColorY && mouseY < changeColorY + changeColorH
+    ) {
       resetGame();
+      spelGestart = false; // Schakelt het selectiescherm weer in
       return;
     }
     return;
   }
 
-  // Houdt bij of er deze klik een vakje is ingekleurd
   let geplaatst = false;
 
-  if (mouseX > vak1X && mouseX < vak1X + rectW && mouseY > vak1Y && mouseY < vak1Y + rectH && vak1Kleur == "grey") {
-    vak1Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
+  // VAKJES KLIKKEN
+  if (mouseX > vak1X && mouseX < vak1X + rectW && mouseY > vak1Y && mouseY < vak1Y + rectH && vak1Kleur == "grey") { vak1Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak2X && mouseX < vak2X + rectW && mouseY > vak2Y && mouseY < vak2Y + rectH && vak2Kleur == "grey") { vak2Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak3X && mouseX < vak3X + rectW && mouseY > vak3Y && mouseY < vak3Y + rectH && vak3Kleur == "grey") { vak3Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak4X && mouseX < vak4X + rectW && mouseY > vak4Y && mouseY < vak4Y + rectH && vak4Kleur == "grey") { vak4Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak5X && mouseX < vak5X + rectW && mouseY > vak5Y && mouseY < vak5Y + rectH && vak5Kleur == "grey") { vak5Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak6X && mouseX < vak6X + rectW && mouseY > vak6Y && mouseY < vak6Y + rectH && vak6Kleur == "grey") { vak6Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak7X && mouseX < vak7X + rectW && mouseY > vak7Y && mouseY < vak7Y + rectH && vak7Kleur == "grey") { vak7Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak8X && mouseX < vak8X + rectW && mouseY > vak8Y && mouseY < vak8Y + rectH && vak8Kleur == "grey") { vak8Kleur = beurt; geplaatst = true; }
+  else if (mouseX > vak9X && mouseX < vak9X + rectW && mouseY > vak9Y && mouseY < vak9Y + rectH && vak9Kleur == "grey") { vak9Kleur = beurt; geplaatst = true; }
+
+  if (!geplaatst) return;
+
+  speelKlik();
+
+  // CONTROLEER WIN-CONDITIES EN BEPAAL WINLIJN
+  if (vak1Kleur != "grey" && vak1Kleur == vak2Kleur && vak2Kleur == vak3Kleur) { gameOver = true; winLijn = {x1: 90, y1: 90, x2: 310, y2: 90}; }
+  else if (vak4Kleur != "grey" && vak4Kleur == vak5Kleur && vak5Kleur == vak6Kleur) { gameOver = true; winLijn = {x1: 90, y1: 190, x2: 310, y2: 190}; }
+  else if (vak7Kleur != "grey" && vak7Kleur == vak8Kleur && vak8Kleur == vak9Kleur) { gameOver = true; winLijn = {x1: 90, y1: 290, x2: 310, y2: 290}; }
+  else if (vak1Kleur != "grey" && vak1Kleur == vak4Kleur && vak4Kleur == vak7Kleur) { gameOver = true; winLijn = {x1: 90, y1: 90, x2: 90, y2: 290}; }
+  else if (vak2Kleur != "grey" && vak2Kleur == vak5Kleur && vak5Kleur == vak8Kleur) { gameOver = true; winLijn = {x1: 190, y1: 90, x2: 190, y2: 290}; }
+  else if (vak3Kleur != "grey" && vak3Kleur == vak6Kleur && vak6Kleur == vak9Kleur) { gameOver = true; winLijn = {x1: 290, y1: 90, x2: 290, y2: 290}; }
+  else if (vak1Kleur != "grey" && vak1Kleur == vak5Kleur && vak5Kleur == vak9Kleur) { gameOver = true; winLijn = {x1: 90, y1: 90, x2: 290, y2: 290}; }
+  else if (vak3Kleur != "grey" && vak3Kleur == vak5Kleur && vak5Kleur == vak7Kleur) { gameOver = true; winLijn = {x1: 290, y1: 90, x2: 90, y2: 290}; }
+
+  // GELIJKSPEL CONTROLE
+  if (vak1Kleur != "grey" && vak2Kleur != "grey" && vak3Kleur != "grey" &&
+      vak4Kleur != "grey" && vak5Kleur != "grey" && vak6Kleur != "grey" &&
+      vak7Kleur != "grey" && vak8Kleur != "grey" && vak9Kleur != "grey") {
+    if (!gameOver) {
+      gameOver = true;
+      gelijkspel = true;
+    }
   }
 
-  // VAK 2
-  if (mouseX > vak2X && mouseX < vak2X + rectW && mouseY > vak2Y && mouseY < vak2Y + rectH && vak2Kleur == "grey") {
-    vak2Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
+  // WISSEL BEURT
+  if (!gameOver) {
+    beurt = (beurt == speler1Kleur) ? speler2Kleur : speler1Kleur;
   }
-
-    // VAK 3
-  if (mouseX > vak3X && mouseX < vak3X + rectW && mouseY > vak3Y && mouseY < vak3Y + rectH && vak3Kleur == "grey") {
-    vak3Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
-  }
-
-    // VAK 4
-  if (mouseX > vak4X && mouseX < vak4X + rectW && mouseY > vak4Y && mouseY < vak4Y + rectH && vak4Kleur == "grey") {
-    vak4Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
-  }
-
-    // VAK 5
-  if (mouseX > vak5X && mouseX < vak5X + rectW && mouseY > vak5Y && mouseY < vak5Y + rectH && vak5Kleur == "grey") {
-    vak5Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
-  }
-
-    // VAK 6
-  if (mouseX > vak6X && mouseX < vak6X + rectW && mouseY > vak6Y && mouseY < vak6Y + rectH && vak6Kleur == "grey") {
-    vak6Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
-  }
-
-    // VAK 7
-  if (mouseX > vak7X && mouseX < vak7X + rectW && mouseY > vak7Y && mouseY < vak7Y + rectH && vak7Kleur == "grey") {
-    vak7Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
-  }
-
-    // VAK 8
-  if (mouseX > vak8X && mouseX < vak8X + rectW && mouseY > vak8Y && mouseY < vak8Y + rectH && vak8Kleur == "grey") {
-    vak8Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
-  }
-
-    // VAK 9
-  if (mouseX > vak9X && mouseX < vak9X + rectW && mouseY > vak9Y && mouseY < vak9Y + rectH && vak9Kleur == "grey") {
-    vak9Kleur = beurt;
-    speelKlik();
-    geplaatst = true;
-  }
-
-  // Als er naast het bord of op een vol vakje is geklikt, gebeurt er niks
-  if (geplaatst == false) {
-    return;
-  }
-
-  // Alle mogelijke combinaties die er zijn gebruiken om het spel te spelen
-  // Bij een winst onthouden we het eerste en laatste vakje voor de streep
-  if (vak1Kleur != "grey" && vak1Kleur == vak2Kleur && vak2Kleur == vak3Kleur) {
-    gameOver = true;
-    lijnStartX = vak1X; lijnStartY = vak1Y; lijnEindX = vak3X; lijnEindY = vak3Y;
-  }
-  if (vak4Kleur != "grey" && vak4Kleur == vak5Kleur && vak5Kleur == vak6Kleur) {
-    gameOver = true;
-    lijnStartX = vak4X; lijnStartY = vak4Y; lijnEindX = vak6X; lijnEindY = vak6Y;
-  }
-  if (vak7Kleur != "grey" && vak7Kleur == vak8Kleur && vak8Kleur == vak9Kleur) {
-    gameOver = true;
-    lijnStartX = vak7X; lijnStartY = vak7Y; lijnEindX = vak9X; lijnEindY = vak9Y;
-  }
-
-  if (vak1Kleur != "grey" && vak1Kleur == vak4Kleur && vak4Kleur == vak7Kleur) {
-    gameOver = true;
-    lijnStartX = vak1X; lijnStartY = vak1Y; lijnEindX = vak7X; lijnEindY = vak7Y;
-  }
-  if (vak2Kleur != "grey" && vak2Kleur == vak5Kleur && vak5Kleur == vak8Kleur) {
-    gameOver = true;
-    lijnStartX = vak2X; lijnStartY = vak2Y; lijnEindX = vak8X; lijnEindY = vak8Y;
-  }
-  if (vak3Kleur != "grey" && vak3Kleur == vak6Kleur && vak6Kleur == vak9Kleur) {
-    gameOver = true;
-    lijnStartX = vak3X; lijnStartY = vak3Y; lijnEindX = vak9X; lijnEindY = vak9Y;
-  }
-
-  if (vak1Kleur != "grey" && vak1Kleur == vak5Kleur && vak5Kleur == vak9Kleur) {
-    gameOver = true;
-    lijnStartX = vak1X; lijnStartY = vak1Y; lijnEindX = vak9X; lijnEindY = vak9Y;
-  }
-  if (vak3Kleur != "grey" && vak3Kleur == vak5Kleur && vak5Kleur == vak7Kleur) {
-    gameOver = true;
-    lijnStartX = vak3X; lijnStartY = vak3Y; lijnEindX = vak7X; lijnEindY = vak7Y;
-  }
-
-// Gelijkspel
-if (
-  vak1Kleur != "grey" &&
-  vak2Kleur != "grey" &&
-  vak3Kleur != "grey" &&
-  vak4Kleur != "grey" &&
-  vak5Kleur != "grey" &&
-  vak6Kleur != "grey" &&
-  vak7Kleur != "grey" &&
-  vak8Kleur != "grey" &&
-  vak9Kleur != "grey"
-) {
-  if (gameOver == false) {
-    gameOver = true;
-    gelijkspel = true;
-  }
-}
-
-  // Bij winst blijft de achtergrond in de kleur van de winnaar
-  if (gameOver == true && gelijkspel == false) {
-    return;
-  }
-
-// Wissel de beurt om elke keer dat er op een vakje word gedrukt
-  if (beurt == speler1Kleur) {
-    beurt = speler2Kleur;
-  } else {
-    beurt = speler1Kleur;
-  }
-
 
   startTijd = millis();
 }
 
-function mouseReleased(){
-
-}
-
-// Aparte functie om het spel te laten resetten wanneer het klaar is
-function resetGame(){
+function resetGame() {
   vak1Kleur = "grey";
   vak2Kleur = "grey";
   vak3Kleur = "grey";
@@ -424,9 +336,9 @@ function resetGame(){
   vak9Kleur = "grey";
 
   gameOver = false;
-  gelijkspel = false
+  gelijkspel = false;
+  winLijn = null;
 
   beurt = speler1Kleur;
-
   startTijd = millis();
 }
