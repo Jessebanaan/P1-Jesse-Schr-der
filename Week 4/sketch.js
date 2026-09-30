@@ -12,90 +12,58 @@ let kleuren = [
   "purple",
 ];
 
-let circleX = 400;
-let circleY = 300;
-let circleDiameter = 0;
-
-let circleX2 = 400;
-let circleY2 = 300;
-let circleDiameter2 = 0;
-
-let circleX3 = 400;
-let circleY3 = 300;
-let circleDiameter3 = 0;
-
-let circleX4 = 400;
-let circleY4 = 300;
-let circleDiameter4 = 0;
-
-let circleX5 = 400;
-let circleY5 = 300;
-let circleDiameter5 = 0;
-
-let circleX6 = 400;
-let circleY6 = 300;
-let circleDiameter6 = 0;
+let diameters = [0, 0, 0, 0, 0, 0, 0, 0];
+let snelheden = [4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5];
 
 function setup() {
-  createCanvas(800, 600);
-
+  createCanvas(800, 600, WEBGL);
   gekozenKleur = random(kleuren);
 }
 
 function draw() {
   background(gekozenKleur);
 
+  orbitControl();
+
+  // RINGEN TEKENEN
   strokeWeight(3);
-  stroke("white");
   noFill();
 
-  // Teken de cirkels
-  circle(circleX, circleY, circleDiameter);
-  circle(circleX2, circleY2, circleDiameter2);
-  circle(circleX3, circleY3, circleDiameter3);
-  circle(circleX4, circleY4, circleDiameter4);
-  circle(circleX5, circleY5, circleDiameter5);
-  circle(circleX6, circleY6, circleDiameter6);
+  for (let i = 0; i < diameters.length; i++) {
+    let alpha = map(diameters[i], 0, 500, 255, 0);
+    alpha = constrain(alpha, 0, 255);
 
-  // Laat ze groeien
-  circleDiameter = circleDiameter + 4;
-  ((circleDiameter2 = circleDiameter2 + 3), 5);
-  circleDiameter3 = circleDiameter3 + 3;
-  ((circleDiameter4 = circleDiameter4 + 2), 5);
-  circleDiameter5 = circleDiameter5 + 2;
-  ((circleDiameter6 = circleDiameter6 + 1), 5);
+    stroke(255, 255, 255, alpha);
+    circle(0, 0, diameters[i]);
 
-  if (circleDiameter > 1200) {
-    circleDiameter = 0;
+    diameters[i] += snelheden[i];
+    if (diameters[i] > 500) {
+      diameters[i] = 0;
+    }
   }
 
-  if (circleDiameter2 > 1200) {
-    circleDiameter2 = 0;
-  }
+  // CENTRALE BAL (ZON)
+  push();
+    fill("yellow");
+    stroke("orange");
+    strokeWeight(1);
+    ellipsoid(40); // Iets groter gemaakt
+  pop();
 
-  if (circleDiameter3 > 1200) {
-    circleDiameter3 = 0;
-  }
+  push();
+    translate(200, 0, 0); 
+    fill("cyan");
+    stroke("blue");
+    ellipsoid(15);
+  pop();
 
-  if (circleDiameter4 > 1200) {
-    circleDiameter4 = 0;
-  }
-
-  if (circleDiameter5 > 1200) {
-    circleDiameter5 = 0;
-  }
-
-  if (circleDiameter6 > 1200) {
-    circleDiameter6 = 0;
-  }
-
-  noFill(false)
-  fill("black")
-  stroke("black")
-  circle(400,300,10)
+  push();
+    translate(-150, -100, -50);
+    stroke("white");
+    ellipsoid(20);
+  pop();
 }
 
 function keyPressed() {
-  gekozenKleur;
   gekozenKleur = random(kleuren);
 }
