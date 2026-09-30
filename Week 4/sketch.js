@@ -13,24 +13,47 @@ let kleuren = [
 ];
 
 let diameters = [0, 0, 0, 0, 0, 0, 0, 0];
-let snelheden = [4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5];
+let snelheden = [3, 2.75, 2.5, 2.25, 2, 1.75, 1.5, 1.25];
+
+let sterren = [];
 
 function setup() {
   createCanvas(800, 600, WEBGL);
   gekozenKleur = random(kleuren);
+
+  // sterren op random plek
+  for (let i = 0; i < 100; i++) {
+    let ster = {
+      x: random(-2000, 2000),
+      y: random(-2000, 2000),
+      z: random(-2000, 2000),
+    };
+    sterren.push(ster);
+  }
 }
 
 function draw() {
-  background(gekozenKleur);
+  background("black");
 
   orbitControl();
 
-  // RINGEN TEKENEN
+  // sterren tekenen
+  stroke("white");
+  strokeWeight(2);
+
+  for (let i = 0; i < sterren.length; i++) {
+    push();
+    translate(sterren[i].x, sterren[i].y, sterren[i].z);
+    point(0, 0, 0); 
+    pop();
+  }
+
+  // Ringen tekenen
   strokeWeight(3);
   noFill();
 
   for (let i = 0; i < diameters.length; i++) {
-    let alpha = map(diameters[i], 0, 500, 255, 0);
+    let alpha = map(diameters[i], 0, 300, 255, 0);
     alpha = constrain(alpha, 0, 255);
 
     stroke(255, 255, 255, alpha);
@@ -42,28 +65,47 @@ function draw() {
     }
   }
 
-  // CENTRALE BAL (ZON)
+  // planeten tekenen
+  // Zon
   push();
-    fill("yellow");
-    stroke("orange");
-    strokeWeight(1);
-    ellipsoid(40); // Iets groter gemaakt
+  fill("yellow");
+  stroke("orange");
+  strokeWeight(1);
+  ellipsoid(40);
   pop();
 
+  // Planeet
   push();
-    translate(200, 0, 0); 
-    fill("cyan");
-    stroke("blue");
-    ellipsoid(15);
+  translate(200, 0, 50);
+  fill("cyan");
+  stroke("blue");
+  ellipsoid(15);
   pop();
 
+  // Maan
   push();
-    translate(-150, -100, -50);
-    stroke("white");
-    ellipsoid(20);
+  translate(100, 0, 200);
+  fill("white");
+  ellipsoid(25);
+  pop();
+
+  // Uranus
+  push();
+  translate(-50, 0, -200);
+  fill("red");
+  stroke("red");
+  ellipsoid(10);
+  pop();
+
+    // Aarde
+  push();
+  translate(-200, 0, 100);
+  fill("green");
+  stroke("green");
+  ellipsoid(25);
   pop();
 }
 
-function keyPressed() {
-  gekozenKleur = random(kleuren);
-}
+// function keyPressed() {
+//   gekozenKleur = random(kleuren);
+// }
