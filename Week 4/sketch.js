@@ -24,13 +24,13 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 600, WEBGL);
+  createCanvas(1000, 600, WEBGL);
 
-  // Kies kleur bij start
+  // Kies kleur bij start voor de planeten
   gekozenKleur = random(kleuren);
 
-  // Genereer 200 sterren op willekeurige locatie
-  for (let i = 0; i < 400; i++) {
+  // Genereer 300 sterren op willekeurige locatie
+  for (let i = 0; i < 300; i++) {
     let ster = {
       x: random(-4000, 4000), // Willekeurige X-positie
       y: random(-4000, 4000), // Willekeurige Y-positie
@@ -63,7 +63,7 @@ function draw() {
   noFill();
 
   for (let i = 0; i < diameters.length; i++) {
-    // Bereken de transparantie
+    // Bereken de transparantie voor de uitfade
     let alpha = map(diameters[i], 0, 300, 255, 0);
     alpha = constrain(alpha, 0, 255);
 
@@ -74,7 +74,7 @@ function draw() {
     diameters[i] += snelheden[i];
 
     // Als de ring te groot wordt maak hem weer klein
-    if (diameters[i] > 1000) {
+    if (diameters[i] > 300) {
       diameters[i] = 0;
     }
   }
@@ -90,11 +90,11 @@ function draw() {
   pop();
 
   // Planeten
-  push();
-  translate(200, 0, 50);
+  push(); // push slaat de huidige positie op
+  translate(200, 0, 50); // Translate voor positie van het object
   fill(gekozenKleur);
   ellipsoid(15);
-  pop();
+  pop(); // Pop herstelt de positie weer
 
   push();
   translate(100, 0, 200);
