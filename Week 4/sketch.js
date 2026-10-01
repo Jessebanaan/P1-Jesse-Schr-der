@@ -22,11 +22,11 @@ function setup() {
   gekozenKleur = random(kleuren);
 
   // sterren op random plek
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     let ster = {
-      x: random(-2000, 2000),
-      y: random(-2000, 2000),
-      z: random(-2000, 2000),
+      x: random(-4000, 4000),
+      y: random(-4000, 4000),
+      z: random(-4000, 4000),
     };
     sterren.push(ster);
   }
@@ -44,7 +44,7 @@ function draw() {
   for (let i = 0; i < sterren.length; i++) {
     push();
     translate(sterren[i].x, sterren[i].y, sterren[i].z);
-    point(0, 0, 0); 
+    point(0, 0, 0);
     pop();
   }
 
@@ -56,7 +56,7 @@ function draw() {
     let alpha = map(diameters[i], 0, 300, 255, 0);
     alpha = constrain(alpha, 0, 255);
 
-    stroke(255, 255, 255, alpha);
+    stroke(255, 255, 0, alpha);
     circle(0, 0, diameters[i]);
 
     diameters[i] += snelheden[i];
@@ -66,6 +66,7 @@ function draw() {
   }
 
   // planeten tekenen
+  fill(gekozenKleur)
   // Zon
   push();
   fill("yellow");
@@ -97,15 +98,46 @@ function draw() {
   ellipsoid(10);
   pop();
 
-    // Aarde
+  // Aarde
   push();
   translate(-200, 0, 100);
   fill("green");
   stroke("green");
   ellipsoid(25);
   pop();
+
+  // Grote zon/ster
+  push();
+  translate(-500, 0, 800);
+  fill("white");
+  stroke("white");
+  ellipsoid(85);
+  pop();
+
+  // Grote zon/ster
+  push();
+  translate(500, 0, -800);
+  fill("white");
+  stroke("white");
+  ellipsoid(85);
+  pop();
+
+  // Grote zon/ster
+  push();
+  translate(2000, 0, 2800);
+  fill("white");
+  stroke("white");
+  ellipsoid(85);
+  pop();
+
+    // Grote zon/ster
+  push();
+  translate(2000, 0, 1000);
+  fill("yellow");
+  stroke("yellow");
+  ellipsoid(85);
+  pop();
 }
 
-// function keyPressed() {
-//   gekozenKleur = random(kleuren);
-// }
+function keyPressed (){
+}
