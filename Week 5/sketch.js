@@ -8,7 +8,7 @@ let maxTijd = 10.0;
 let isBeantwoord = false; // Is er al geklikt op de vraag
 let gekozenOptie = -1;    // Welke knop is ingedrukt
 
-// === 10 MAKKELIJKE VRAGEN ===
+// 10 makkelijke vragen
 let makkelijkeVragen = [
   {
     vraag: "Wat betekent de gele vlag tijdens een autorace?",
@@ -62,7 +62,7 @@ let makkelijkeVragen = [
   }
 ];
 
-// === 10 GEMIDDELDE VRAGEN ===
+// 10 medium vragen
 let gemiddeldeVragen = [
   {
     vraag: "Op welk beroemd circuit wordt de 24 uur van Le Mans gereden?",
@@ -116,7 +116,7 @@ let gemiddeldeVragen = [
   }
 ];
 
-//Moeilijke vragen
+// Moeilijke vragen
 let moeilijkeVragen = [
   {
     vraag: "Welke 3 klasses worden er gebruikt in het IMSA-kampioenschap?",
@@ -177,12 +177,19 @@ let huidigeVraag = 0;
 let score = 0;
 
 // Plaatjes en geluiden
-let bgFoto;
 let correctSound;
 let wrongSound;
 
+let bgEasy, bgMedium, bgHard, bgStart;
+let actieveBgFoto;
+
 function preload() {
-  bgFoto = loadImage("circuit.avif");
+  // Zorg dat deze bestandsnamen EXACT overeenkomen met wat er in jouw p5.js map staat!
+  bgStart = loadImage("easy_bg.jpg"); // Gebruik hier je startscherm-foto
+  bgEasy = loadImage("easy_bg.jpg");
+  bgMedium = loadImage("medium_bg.jpg");
+  bgHard = loadImage("hard_bg.avif");
+  
   correctSound = loadSound("correct.mp3");
   wrongSound = loadSound("wrong.mp3");
 }
@@ -190,17 +197,18 @@ function preload() {
 function setup() {
   createCanvas(1000, 600);
   userStartAudio();
+  actieveBgFoto = bgStart; // Begin met de startscherm-foto
 }
 
 function draw() {
   background(220);
-  image(bgFoto, 0, 0, width, height);
+  image(actieveBgFoto, 0, 0, width, height);
 
   // Overlay voor betere leesbaarheid van tekst
   fill(0, 140);
   rect(0, 0, width, height);
 
-  //1ste scherm start waar je moeilijkheid kan kiezen
+  // 1ste scherm: Startscherm
   if (schermStatus === "START") {
     fill(255);
     textSize(36);
@@ -210,7 +218,6 @@ function draw() {
     textSize(18);
     text("Kies je moeilijkheidsgraad:", width / 2, height / 2 - 40);
 
-    // Knoppen voor de 3 gamemodes
     let niveaus = ["EASY", "MEDIUM", "HARD"];
     let kleuren = [color(0, 200, 80), color(255, 204, 0), color(220, 50, 50)];
 
@@ -231,7 +238,7 @@ function draw() {
     }
   }
 
-  // 2de scherm de quiz
+  // 2de scherm: De quiz
   else if (schermStatus === "QUIZ") {
     let actieveVraag = actieveVragenLijst[huidigeVraag];
 
@@ -248,16 +255,16 @@ function draw() {
       }
     }
 
-    // --- TIJDSBALK TEKENEN ---
+    // Tijdsbalk
     let balkBreedte = map(timer, 0, maxTijd, 0, 300);
     if (timer < 4) {
-      fill(220, 50, 50); // Rood als er nog minder dan 4 sec over zijn
+      fill(220, 50, 50); // Rood
     } else {
       fill(255, 204, 0); // Geel
     }
     rect(width / 2 - 150, 130, balkBreedte, 10, 5);
 
-    // Vragen en antwoorden maken
+    // Vragen en antwoorden
     fill(255);
     textSize(22);
     textAlign(CENTER);
@@ -275,9 +282,9 @@ function draw() {
         if (i === actieveVraag.correct) {
           fill(0, 200, 80); // Groen voor goed antwoord
         } else if (i === gekozenOptie) {
-          fill(220, 50, 50); // Rood voor jouw foute keuze
+          fill(220, 50, 50); // Rood voor foute keuze
         } else {
-          fill(60); // Grijs voor overige opties
+          fill(60); // Grijs
         }
       } else {
         fill(isHover ? color(255, 204, 0) : 45);
@@ -296,7 +303,7 @@ function draw() {
     text("Score: " + score + " / " + actieveVragenLijst.length, width / 2, height - 40);
   }
 
-  // 3de scherm eindscherm
+  // 3de scherm: Eindscherm
   else if (schermStatus === "EINDE") {
     fill(255);
     textSize(36);
@@ -321,7 +328,7 @@ function draw() {
 }
 
 function mousePressed() {
-  // Klik op startscherm bijv gamemode
+  // Klik op startscherm
   if (schermStatus === "START") {
     let niveaus = ["EASY", "MEDIUM", "HARD"];
 
@@ -337,7 +344,7 @@ function mousePressed() {
     }
   }
 
-  // Klikken op de quiz bijv het antwoords
+  // Klikken tijdens de quiz
   else if (schermStatus === "QUIZ" && !isBeantwoord) {
     let actieveVraag = actieveVragenLijst[huidigeVraag];
 
@@ -361,25 +368,28 @@ function mousePressed() {
     }
   }
 
-  // Klik op eindscherm namelijk opnieuw spelen
+  // Klik op eindscherm (Opnieuw spelen)
   else if (schermStatus === "EINDE") {
     let knopX = width / 2 - 125;
     let knopY = height / 2 + 40;
 
     if (mouseX > knopX && mouseX < knopX + 250 && mouseY > knopY && mouseY < knopY + 50) {
-      schermStatus = "START"; // Terug naar het menu om weer een gamemode te kiezen
+      actieveBgFoto = bgStart; // Reset naar start-foto
+      schermStatus = "START";
     }
   }
 }
 
 function startQuiz(gekozenNiveau) {
-  // laat vrgane weer opnieuw willekeurig komen en zo
   if (gekozenNiveau === "EASY") {
     actieveVragenLijst = shuffle(makkelijkeVragen);
+    actieveBgFoto = bgEasy;
   } else if (gekozenNiveau === "MEDIUM") {
     actieveVragenLijst = shuffle(gemiddeldeVragen);
+    actieveBgFoto = bgMedium;
   } else if (gekozenNiveau === "HARD") {
     actieveVragenLijst = shuffle(moeilijkeVragen);
+    actieveBgFoto = bgHard;
   }
 
   resetQuiz();
