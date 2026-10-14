@@ -20,30 +20,70 @@ let gameOver = false;
 // Image dingen
 let img;
 let achtergrond;
+let nachtachtergrond; 
 let blij;
 
 function preload() {
   achtergrond = loadImage("huisdierachtergrond");
+  nachtachtergrond = loadImage("nachtachtergrond"); 
   blij = loadImage("Naamloos-1.png");
 }
 
 function setup() {
   createCanvas(800, 600);
 
-  let score = getItem("score");
+  // Inlezen van opgeslagen data
+  let opgeslagenMoney = getItem("opgeslagenGeld");
+  if (opgeslagenMoney !== null) { money = opgeslagenMoney; }
+
+  let opgeslagenHonger = getItem("opgeslagenHonger");
+  if (opgeslagenHonger !== null) { honger = opgeslagenHonger; }
+
+  let opgeslagenGeluk = getItem("opgeslagenGeluk");
+  if (opgeslagenGeluk !== null) { geluk = opgeslagenGeluk; }
+
+  let opgeslagenEnergie = getItem("opgeslagenEnergie");
+  if (opgeslagenEnergie !== null) { energie = opgeslagenEnergie; }
+
+  let opgeslagenGezondheid = getItem("opgeslagenGezondheid");
+  if (opgeslagenGezondheid !== null) { gezondheid = opgeslagenGezondheid; }
+}
+
+function allesOpslaan() {
+  storeItem("opgeslagenGeld", money);
+  storeItem("opgeslagenHonger", honger);
+  storeItem("opgeslagenGeluk", geluk);
+  storeItem("opgeslagenEnergie", energie);
+  storeItem("opgeslagenGezondheid", gezondheid);
 }
 
 function draw() {
+  // --- VLOEIENDE DAG/NACHT OVERGANG ---
+  let cyclusTijd = millis() % 200000; 
+  let nachtAlpha = 0;
+
+  if (cyclusTijd < 100000) {
+    nachtAlpha = map(cyclusTijd, 0, 100000, 0, 255);
+  } else {
+    nachtAlpha = map(cyclusTijd, 100000, 200000, 255, 0);
+  }
+
   background(achtergrond);
+  tint(255, nachtAlpha);
+  image(nachtachtergrond, 0, 0, width, height);
+  noTint(); 
+
   strokeWeight(1);
 
-  if (frameCount % 60 == 0) {
-    honger = max(0, honger - 1);
-    geluk = max(0, geluk - 0.5);
-  }
-  if (frameCount % 600 == 0) {
-    gezondheid = max(0, gezondheid - 5);
-    energie = max(0, energie - 10);
+  if (!gameOver) {
+    if (frameCount % 60 == 0) {
+      honger = max(0, honger - 1);
+      geluk = max(0, geluk - 0.5);
+    }
+    if (frameCount % 600 == 0) {
+      gezondheid = max(0, gezondheid - 5);
+      energie = max(0, energie - 10);
+    }
   }
 
   // Honger balk met tekst
@@ -83,21 +123,20 @@ function draw() {
   text(`Money: ${money}`, 675, 50);
 
   // BEPAAL STATUS EN TEKEN HUISDIER
-  let huidigeStatus = status[0]; // standaard "verity"
+  let huidigeStatus = status[0]; 
   
   if (gezondheid < 30) {
-    huidigeStatus = status[1]; // "cruelty" (boos/rood)
+    huidigeStatus = status[1]; 
   } else if (geluk < 40 || energie < 30) {
-    huidigeStatus = status[2]; // "sadity" (verdrietig/blauw)
+    huidigeStatus = status[2]; 
   }
 
-// 1. Kleur kiezen op basis van de status (geel voor verity zoals op de foto)
   if (huidigeStatus === "cruelty") {
-    fill(220, 50, 50); // Rood voor boos
+    fill(220, 50, 50); 
   } else if (huidigeStatus === "sadity") {
-    fill(50, 100, 220); // Blauw voor verdrietig
+    fill(50, 100, 220); 
   } else {
-    fill(255, 220, 0); // Mooi geel voor verity[cite: 1]
+    fill(255, 220, 0); 
   }
 
   // Het hoofdje
@@ -111,28 +150,26 @@ function draw() {
   circle(380, 280, 10);
   circle(420, 280, 10);
 
-  // 2. Alleen een lach tekenen als het verity is
+  // Monden op basis van status
   if (huidigeStatus === "verity") {
     noFill();
     stroke(0);
-    strokeWeight(3); // Maak de lach mooi dik
-    arc(400, 310, 50, 30, 0, PI); // Tekent een mooie glimlach[cite: 1]
+    strokeWeight(3);
+    arc(400, 310, 50, 30, 0, PI); 
   }
 
-  // 2. Alleen een lach tekenen als het verity is
   if (huidigeStatus === "cruelty") {
     noFill();
     stroke(0);
-    strokeWeight(3); // Maak de lach mooi dik
-    arc(400, 310, 50, 30, 0, PI); // Tekent een mooie glimlach[cite: 1]
+    strokeWeight(3);
+    arc(400, 310, 50, 30, 0, PI); 
   }
 
-    // 3. Verdrietig wanneer het sadity is
   if (huidigeStatus === "sadity") {
     noFill();
     stroke(0);
-    strokeWeight(3); // Maak de lach mooi dik
-    arc(arc(400, 320, 40, 25, PI, TWO_PI));
+    strokeWeight(3);
+    arc(400, 320, 40, 25, PI, TWO_PI);
   }
 
   // Check of een van de stats 0 is
@@ -140,45 +177,53 @@ function draw() {
     gameOver = true;
   }
 
-// Als het game over is
+  // Als het game over is
   if (gameOver) {
-    background(0); // Zwarte achtergrond
+    background(0); 
     
-    // Teken het dode huisdier (deadity)
-    fill(100); // Grauwe kleur voor de dood
+    fill(100); 
     stroke(0);
     strokeWeight(1);
     circle(400, 300, 100);
 
-    // Kruisjes ogen (Links oog)
+    // Kruisjes ogen
     stroke(0);
     strokeWeight(3);
-    line(372, 272, 388, 288); // Schuine lijn 1
-    line(388, 272, 372, 288); // Schuine lijn 2
+    line(372, 272, 388, 288);
+    line(388, 272, 372, 288);
+    line(412, 272, 428, 288);
+    line(428, 272, 412, 288);
 
-    // Kruisjes ogen (Rechts oog)
-    line(412, 272, 428, 288); // Schuine lijn 1
-    line(428, 272, 412, 288); // Schuine lijn 2
-
-    // Dode mond (een rechte streep of platte mond)
+    // Dode mond
     line(385, 330, 415, 330);
 
     // Tekst
-    fill(255, 0, 0); // Rode tekst
+    fill(255, 0, 0);
     noStroke();
     textSize(40);
     text("GAME OVER", 280, 180);
     
     textSize(20);
     text("Deadity", 370, 220);
-    text("You just killed your pet!", 300, 420);
+    text("You just killed your pet!", 300, 390);
     
-    return; // Stopt de rest van de draw()
+    // --- PLAY AGAIN KNOP ---
+    fill("#ff0000");
+    stroke("#a90000");
+    strokeWeight(5);
+    rect(335, 430, 140, 40, 10);
+    strokeWeight(1);
+    stroke(0);
+    fill(255);
+    textSize(16);
+    text("Buy a new verity", 347, 455);
+
+    return; 
   }
 
-  // Toon ook even op het scherm welke status het dier heeft (handig voor debugging!)
+  // Status op het scherm tonen
   textSize(24);
-  fill(255)
+  fill(255);
   text(`${huidigeStatus}`, 370, 180);
 
   // 1. Feed Knop
@@ -190,7 +235,7 @@ function draw() {
   stroke(0);
   fill(255);
   textSize(16);
-  text(`Feed (${feedCost})`, 125, 505); // Laat de feedcost zien
+  text(`Feed (${feedCost})`, 125, 505);
 
   // 2. Play Knop
   fill(50, 150, 255);
@@ -246,23 +291,45 @@ function draw() {
 
 function mouseClicked() {
   if (gameOver) {
-    return; // Stop meteen als de game over is
+    // Check of er op de Play Again knop wordt geklikt (X: 340 t/m 460, Y: 430 t/m 470)
+    if (mouseX > 340 && mouseX < 460 && mouseY > 430 && mouseY < 470) {
+      // Reset alle statistieken en variabelen
+      honger = 100;
+      geluk = 100;
+      energie = 100;
+      gezondheid = 100;
+      money = 10;
+      moneyPerClick = 1;
+      upgradeCost = 10;
+      feedCost = 5;
+      gameOver = false;
+
+      allesOpslaan();
+      print("Spel opnieuw gestart!");
+    }
+    return; 
   }
-// Feed knop
+
+  // Feed knop
   if (mouseX > 100 && mouseX < 210 && mouseY > 480 && mouseY < 520) {
     if (money >= feedCost) {
-      money = money - feedCost;      
+      money = money - feedCost;       
       honger = min(100, honger + 10);
       feedCost = feedCost + 1;     
-      print("Fed! Nieuwe prijs wordt: " + feedCost);
+      
+      allesOpslaan();
+      print("Fed!");
     } else {
       print("Niet genoeg geld om te voeden!");
     }
   }
+
   // Play knop
   if (mouseX > 220 && mouseX < 330 && mouseY > 480 && mouseY < 520) {
     geluk = min(100, geluk + 15);
     energie = max(0, energie - 5);
+
+    allesOpslaan();
     print("Played");
   }
 
@@ -270,6 +337,8 @@ function mouseClicked() {
   if (mouseX > 100 && mouseX < 210 && mouseY > 530 && mouseY < 570) {
     gezondheid = min(100, gezondheid + 15);
     energie = max(0, energie - 5);
+
+    allesOpslaan();
     print("Cleaned");
   }
 
@@ -277,6 +346,8 @@ function mouseClicked() {
   if (mouseX > 220 && mouseX < 330 && mouseY > 530 && mouseY < 570) {
     energie = 100;
     gezondheid = min(100, gezondheid + 5);
+
+    allesOpslaan();
     print("Slept");
   }
 
@@ -286,6 +357,8 @@ function mouseClicked() {
     geluk = max(0, geluk - 1);
     energie = max(0, energie - 1);
     money = money + moneyPerClick;
+
+    allesOpslaan();
     print("Gewerkt!");
   }
 
@@ -295,7 +368,9 @@ function mouseClicked() {
       money = money - upgradeCost;
       moneyPerClick = moneyPerClick + 1;
       upgradeCost = floor(upgradeCost * 1.5);
-      print("Upgrade gekocht! Per klik krijg je nu: " + moneyPerClick);
+      
+      allesOpslaan();
+      print("Upgrade gekocht!");
     } else {
       print("Niet genoeg geld!");
     }
@@ -304,23 +379,22 @@ function mouseClicked() {
 
 function keyPressed() {
   if (gameOver) {
-    return; // Stop meteen als de game over is
+    return; 
   }
   if (key === "c" || key === "C") {
     gezondheid = min(100, gezondheid + 15);
+    allesOpslaan();
   }
   if (key === "f" || key === "F") {
     honger = min(100, honger + 5);
+    allesOpslaan();
   }
   if (key === "e" || key === "E") {
     energie = min(100, energie + 5);
+    allesOpslaan();
   }
   if (key === "p" || key === "P") {
     geluk = min(100, geluk + 5);
+    allesOpslaan();
   }
-}
-
-function saveScore() {
-  // Sla een waarde op
-  storeItem("money");
 }
