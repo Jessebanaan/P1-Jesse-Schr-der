@@ -5,9 +5,9 @@ let energie = 100;
 let gezondheid = 100;
 
 // Geld dingen
-let money = 10; // Startgeld is 10
-let moneyPerClick = 1; // Hoeveel geld je nu krijgt per klik op Work
-let upgradeCost = 10;  // Wat de eerste upgrade kost
+let money = 10;
+let moneyPerClick = 1;
+let upgradeCost = 10;
 
 let feedCost = 5; // Wat voeden nu kost
 
@@ -15,18 +15,27 @@ let feedCost = 5; // Wat voeden nu kost
 let status = ["verity", "cruelty", "sadity"];
 
 // Game over dingen
-let gameOver = false; 
+let gameOver = false;
 
 // Image dingen
 let img;
 let achtergrond;
-let nachtachtergrond; 
+let nachtachtergrond;
 let blij;
+let skull;
 
 function preload() {
   achtergrond = loadImage("huisdierachtergrond");
-  nachtachtergrond = loadImage("nachtachtergrond"); 
+  nachtachtergrond = loadImage("nachtachtergrond");
   blij = loadImage("Naamloos-1.png");
+  skull = loadImage("skull")
+
+  mijnGeluid = loadSound('verity-greeting.mp3');
+  heyItsVerity = loadSound('hey-its-me-its-verity.mp3')
+  eat = loadSound('nom-nom-nom_gPJiWn4.mp3')
+  sleep = loadSound('talking-ben-snore.mp3')
+  clean = loadSound('quick-ting.mp3')
+  dead = loadSound('roblox-death-sound_1.mp3')
 }
 
 function setup() {
@@ -34,19 +43,42 @@ function setup() {
 
   // Inlezen van opgeslagen data
   let opgeslagenMoney = getItem("opgeslagenGeld");
-  if (opgeslagenMoney !== null) { money = opgeslagenMoney; }
+  if (opgeslagenMoney !== null) {
+    money = opgeslagenMoney;
+  }
 
   let opgeslagenHonger = getItem("opgeslagenHonger");
-  if (opgeslagenHonger !== null) { honger = opgeslagenHonger; }
+  if (opgeslagenHonger !== null) {
+    honger = opgeslagenHonger;
+  }
 
   let opgeslagenGeluk = getItem("opgeslagenGeluk");
-  if (opgeslagenGeluk !== null) { geluk = opgeslagenGeluk; }
+  if (opgeslagenGeluk !== null) {
+    geluk = opgeslagenGeluk;
+  }
 
   let opgeslagenEnergie = getItem("opgeslagenEnergie");
-  if (opgeslagenEnergie !== null) { energie = opgeslagenEnergie; }
+  if (opgeslagenEnergie !== null) {
+    energie = opgeslagenEnergie;
+  }
 
   let opgeslagenGezondheid = getItem("opgeslagenGezondheid");
-  if (opgeslagenGezondheid !== null) { gezondheid = opgeslagenGezondheid; }
+  if (opgeslagenGezondheid !== null) {
+    gezondheid = opgeslagenGezondheid;
+  }
+
+  let opgeslagenUpgradeCost = getItem("opgeslagenUpgradeCost");
+  if (opgeslagenUpgradeCost !== null) {
+    upgradeCost = opgeslagenUpgradeCost;
+  }
+
+    let opgeslagenMoneyPerClick = getItem("opgeslagenMoneyPerClick");
+  if (opgeslagenMoneyPerClick !== null) {
+    moneyPerClick = opgeslagenMoneyPerClick;
+  }
+
+
+
 }
 
 function allesOpslaan() {
@@ -55,11 +87,13 @@ function allesOpslaan() {
   storeItem("opgeslagenGeluk", geluk);
   storeItem("opgeslagenEnergie", energie);
   storeItem("opgeslagenGezondheid", gezondheid);
+  storeItem("opgeslagenUpgradeCost", upgradeCost);
+  storeItem("opgeslagenMoneyPerClick", moneyPerClick);
 }
 
 function draw() {
-  // --- VLOEIENDE DAG/NACHT OVERGANG ---
-  let cyclusTijd = millis() % 200000; 
+  // Dag en nacht overgang
+  let cyclusTijd = millis() % 200000;
   let nachtAlpha = 0;
 
   if (cyclusTijd < 100000) {
@@ -71,7 +105,7 @@ function draw() {
   background(achtergrond);
   tint(255, nachtAlpha);
   image(nachtachtergrond, 0, 0, width, height);
-  noTint(); 
+  noTint();
 
   strokeWeight(1);
 
@@ -118,51 +152,59 @@ function draw() {
   fill("#00a1f1");
   rect(150, 90, energie, 15);
 
-  // Geld tekst
-  fill("black");
+  // Geld tekst met achtergrond
+  textSize(20)
+  strokeWeight(5)
+    fill(50, 150, 255);
+  stroke("#83f3ff");
+  rect(665, 25, 110, 40, 10);
+
+  strokeWeight(1)
+  stroke(0)
+  fill("white");
   text(`Money: ${money}`, 675, 50);
 
   // BEPAAL STATUS EN TEKEN HUISDIER
-  let huidigeStatus = status[0]; 
-  
+  let huidigeStatus = status[0];
+
   if (gezondheid < 30) {
-    huidigeStatus = status[1]; 
+    huidigeStatus = status[1];
   } else if (geluk < 40 || energie < 30) {
-    huidigeStatus = status[2]; 
+    huidigeStatus = status[2];
   }
 
   if (huidigeStatus === "cruelty") {
-    fill(220, 50, 50); 
+    fill(220, 50, 50);
   } else if (huidigeStatus === "sadity") {
-    fill(50, 100, 220); 
+    fill(50, 100, 220);
   } else {
-    fill(255, 220, 0); 
+    fill(255, 220, 0);
   }
 
-  // Het hoofdje
+  // Het hoofd
   stroke(0);
   strokeWeight(1);
   circle(400, 300, 100);
-  
-  // Oogjes
+
+  // Ogen
   fill("black");
   noStroke();
   circle(380, 280, 10);
   circle(420, 280, 10);
 
-  // Monden op basis van status
+  // Mond op basis van status
   if (huidigeStatus === "verity") {
     noFill();
     stroke(0);
     strokeWeight(3);
-    arc(400, 310, 50, 30, 0, PI); 
+    arc(400, 310, 50, 30, 0, PI);
   }
 
   if (huidigeStatus === "cruelty") {
     noFill();
     stroke(0);
     strokeWeight(3);
-    arc(400, 310, 50, 30, 0, PI); 
+    arc(400, 310, 50, 30, 0, PI);
   }
 
   if (huidigeStatus === "sadity") {
@@ -175,13 +217,22 @@ function draw() {
   // Check of een van de stats 0 is
   if (honger <= 0 || geluk <= 0 || energie <= 0 || gezondheid <= 0) {
     gameOver = true;
+
+              if (dead.isPlaying()) {
+      dead.stop();
+    } else {
+      dead.play();
+    }
   }
 
   // Als het game over is
   if (gameOver) {
-    background(0); 
-    
-    fill(100); 
+    background(0);
+
+    skull.resize(400,200);
+    image(skull,500,250)
+
+    fill(100);
     stroke(0);
     strokeWeight(1);
     circle(400, 300, 100);
@@ -197,17 +248,44 @@ function draw() {
     // Dode mond
     line(385, 330, 415, 330);
 
+    // Grafsteen
+    strokeWeight(10)
+    stroke("#3e3e3e")
+    circle(150,300,100)
+    rect(100,300,100,150)
+
+    strokeWeight(2)
+    stroke(0)
+    fill(255)
+    textSize(25)
+    text("Verity", 120, 350)
+
+    textSize(10)
+    strokeWeight(0)
+    fill("#303030")
+    text("R.I.P", 140, 280)
+
+      // Tijd ding
+      textSize(25)
+      strokeWeight(2)
+      fill(255)
+  let nu = new Date();
+  text(nu.getDate(),115,400);
+  text(".",145,400);
+  text(nu.getMonth() + 1, 155,400);
+  text(nu.getFullYear(), 125,430);
+
     // Tekst
     fill(255, 0, 0);
     noStroke();
     textSize(40);
     text("GAME OVER", 280, 180);
-    
+
     textSize(20);
     text("Deadity", 370, 220);
-    text("You just killed your pet!", 300, 390);
-    
-    // --- PLAY AGAIN KNOP ---
+    text("You killed your verity!", 300, 390);
+
+    // Buy a new verity knop
     fill("#ff0000");
     stroke("#a90000");
     strokeWeight(5);
@@ -216,9 +294,9 @@ function draw() {
     stroke(0);
     fill(255);
     textSize(16);
-    text("Buy a new verity", 347, 455);
+    text("Get a new verity", 347, 455);
 
-    return; 
+    return;
   }
 
   // Status op het scherm tonen
@@ -245,7 +323,7 @@ function draw() {
   strokeWeight(1);
   stroke(0);
   fill(255);
-  text("Play", 260, 505);
+  text("Entertain", 240, 505);
 
   // 3. Clean Knop
   fill(50, 150, 255);
@@ -307,16 +385,22 @@ function mouseClicked() {
       allesOpslaan();
       print("Spel opnieuw gestart!");
     }
-    return; 
+    return;
   }
 
   // Feed knop
   if (mouseX > 100 && mouseX < 210 && mouseY > 480 && mouseY < 520) {
     if (money >= feedCost) {
-      money = money - feedCost;       
+      money = money - feedCost;
       honger = min(100, honger + 10);
-      feedCost = feedCost + 1;     
-      
+      feedCost = feedCost + 1;
+
+            if (eat.isPlaying()) {
+      eat.stop();
+    } else {
+      eat.play();
+    }
+
       allesOpslaan();
       print("Fed!");
     } else {
@@ -324,10 +408,16 @@ function mouseClicked() {
     }
   }
 
-  // Play knop
+  // Entertain knop
   if (mouseX > 220 && mouseX < 330 && mouseY > 480 && mouseY < 520) {
     geluk = min(100, geluk + 15);
     energie = max(0, energie - 5);
+
+      if (heyItsVerity.isPlaying()) {
+      heyItsVerity.stop();
+    } else {
+      heyItsVerity.play();
+    }
 
     allesOpslaan();
     print("Played");
@@ -338,6 +428,12 @@ function mouseClicked() {
     gezondheid = min(100, gezondheid + 15);
     energie = max(0, energie - 5);
 
+          if (clean.isPlaying()) {
+      clean.stop();
+    } else {
+      clean.play();
+    }
+
     allesOpslaan();
     print("Cleaned");
   }
@@ -346,6 +442,12 @@ function mouseClicked() {
   if (mouseX > 220 && mouseX < 330 && mouseY > 530 && mouseY < 570) {
     energie = 100;
     gezondheid = min(100, gezondheid + 5);
+
+          if (sleep.isPlaying()) {
+      sleep.stop();
+    } else {
+      sleep.play();
+    }
 
     allesOpslaan();
     print("Slept");
@@ -368,33 +470,41 @@ function mouseClicked() {
       money = money - upgradeCost;
       moneyPerClick = moneyPerClick + 1;
       upgradeCost = floor(upgradeCost * 1.5);
-      
+
       allesOpslaan();
       print("Upgrade gekocht!");
     } else {
       print("Niet genoeg geld!");
     }
   }
+
+if (mouseX > 350 && mouseX < 450 && mouseY > 250 && mouseY < 350) {
+    if (mijnGeluid.isPlaying()) {
+      mijnGeluid.stop();
+    } else {
+      mijnGeluid.play();
+    }
+  }
 }
 
-function keyPressed() {
-  if (gameOver) {
-    return; 
-  }
-  if (key === "c" || key === "C") {
-    gezondheid = min(100, gezondheid + 15);
-    allesOpslaan();
-  }
-  if (key === "f" || key === "F") {
-    honger = min(100, honger + 5);
-    allesOpslaan();
-  }
-  if (key === "e" || key === "E") {
-    energie = min(100, energie + 5);
-    allesOpslaan();
-  }
-  if (key === "p" || key === "P") {
-    geluk = min(100, geluk + 5);
-    allesOpslaan();
-  }
-}
+// function keyPressed() {
+//   if (gameOver) {
+//     return;
+//   }
+//   if (key === "c" || key === "C") {
+//     gezondheid = min(100, gezondheid + 15);
+//     allesOpslaan();
+//   }
+//   if (key === "f" || key === "F") {
+//     honger = min(100, honger + 5);
+//     allesOpslaan();
+//   }
+//   if (key === "e" || key === "E") {
+//     energie = min(100, energie + 5);
+//     allesOpslaan();
+//   }
+//   if (key === "p" || key === "P") {
+//     geluk = min(100, geluk + 5);
+//     allesOpslaan();
+//   }
+// }
