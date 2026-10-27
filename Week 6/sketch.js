@@ -4,7 +4,7 @@ let energie = 100;
 let gezondheid = 100;
 
 let money = 10;
-let moneyPerClick = 1000000;
+let moneyPerClick = 1;
 let upgradeCost = 10;
 let feedCost = 5;
 
@@ -13,15 +13,16 @@ let status = ["verity", "cruelty", "sadity", "moggity"];
 
 // Spel-states
 let gameOver = false;
-let isSlapend = false;
+let isSlapend = false; 
 
 // Datums voor de grafsteen
 let geboorteDatum = "";
 let sterfDatum = "";
+let dagen = "";
 
 // Voor de tekstwolkjes
-let actieTekst = "";
-let actieTimer = 0;
+let actieTekst = ""; 
+let actieTimer = 0;   
 
 // Plaatjes en geluiden
 let achtergrond;
@@ -49,30 +50,14 @@ function setup() {
   createCanvas(800, 600);
 
   // Probeer oude data op te slaan als het er is
-  if (getItem("opgeslagenGeld") !== null) {
-    money = getItem("opgeslagenGeld");
-  }
-  if (getItem("opgeslagenHonger") !== null) {
-    honger = getItem("opgeslagenHonger");
-  }
-  if (getItem("opgeslagenGeluk") !== null) {
-    geluk = getItem("opgeslagenGeluk");
-  }
-  if (getItem("opgeslagenEnergie") !== null) {
-    energie = getItem("opgeslagenEnergie");
-  }
-  if (getItem("opgeslagenGezondheid") !== null) {
-    gezondheid = getItem("opgeslagenGezondheid");
-  }
-  if (getItem("opgeslagenUpgradeCost") !== null) {
-    upgradeCost = getItem("opgeslagenUpgradeCost");
-  }
-  if (getItem("opgeslagenMoneyPerClick") !== null) {
-    moneyPerClick = getItem("opgeslagenMoneyPerClick");
-  }
-  if (getItem("opgeslagenFeedCost") !== null) {
-    feedCost = getItem("opgeslagenFeedCost");
-  }
+  if (getItem("opgeslagenGeld") !== null) { money = getItem("opgeslagenGeld"); }
+  if (getItem("opgeslagenHonger") !== null) { honger = getItem("opgeslagenHonger"); }
+  if (getItem("opgeslagenGeluk") !== null) { geluk = getItem("opgeslagenGeluk"); }
+  if (getItem("opgeslagenEnergie") !== null) { energie = getItem("opgeslagenEnergie"); }
+  if (getItem("opgeslagenGezondheid") !== null) { gezondheid = getItem("opgeslagenGezondheid"); }
+  if (getItem("opgeslagenUpgradeCost") !== null) { upgradeCost = getItem("opgeslagenUpgradeCost"); }
+  if (getItem("opgeslagenMoneyPerClick") !== null) { moneyPerClick = getItem("opgeslagenMoneyPerClick"); }
+  if (getItem("opgeslagenFeedCost") !== null) { feedCost = getItem("opgeslagenFeedCost"); }
 
   // Geboortedatum ophalen of aanmaken als die er nog niet is
   let opgeslagenGeboorte = getItem("opgeslagenGeboorte");
@@ -80,8 +65,7 @@ function setup() {
     geboorteDatum = opgeslagenGeboorte;
   } else {
     let d = new Date();
-    geboorteDatum =
-      d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+    geboorteDatum = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
     storeItem("opgeslagenGeboorte", geboorteDatum);
   }
 }
@@ -142,11 +126,11 @@ function draw() {
     textSize(14);
     strokeWeight(1);
     fill(255);
-    text(geboorteDatum, 115, 390); // Geboortedatum
+    text(geboorteDatum, 115, 390); 
     textSize(20);
-    text("-", 150, 410); // Klein streepje ertussen
+    text("-", 150, 410);          
     textSize(14);
-    text(sterfDatum, 115, 430); // Sterfdatum
+    text(sterfDatum, 115, 430);    
 
     // Game over tekst
     fill(255, 0, 0);
@@ -169,7 +153,7 @@ function draw() {
     textSize(16);
     text("Get a new verity", 347, 455);
 
-    return;
+    return; 
   }
 
   // Teken de achtergrond
@@ -179,49 +163,39 @@ function draw() {
   // Stats langzaam laten zakken
   if (frameCount % 60 == 0) {
     honger = honger - 1;
-    if (honger < 0) {
-      honger = 0;
-    }
+    if (honger < 0) { honger = 0; }
 
     geluk = geluk - 0.5;
-    if (geluk < 0) {
-      geluk = 0;
-    }
-
+    if (geluk < 0) { geluk = 0; }
+    
     // Timer voor tekstwolkje
     if (actieTimer > 0) {
       actieTimer = actieTimer - 1;
       if (actieTimer <= 0) {
-        actieTekst = "";
+        actieTekst = ""; 
       }
     }
   }
-
+  
   if (frameCount % 600 == 0) {
     gezondheid = gezondheid - 5;
-    if (gezondheid < 0) {
-      gezondheid = 0;
-    }
+    if (gezondheid < 0) { gezondheid = 0; }
 
     energie = energie - 10;
-    if (energie < 0) {
-      energie = 0;
-    }
+    if (energie < 0) { energie = 0; }
   }
 
   // Check of het huisdier dood is
   if (honger <= 0 || geluk <= 0 || energie <= 0 || gezondheid <= 0) {
     if (gameOver == false) {
-      // Bepaal de sterfdatum op het exacte moment dat hij doodgaat
       let d = new Date();
-      sterfDatum =
-        d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+      sterfDatum = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
     }
 
     gameOver = true;
     isSlapend = false;
     actieTimer = 0;
-
+    
     if (dead.isPlaying() == false) {
       dead.play();
     }
@@ -247,17 +221,32 @@ function draw() {
   fill("#00a1f1");
   rect(150, 90, energie, 15);
 
-  // Geld box rechtsboven
+  // Geld rechtsboven
   textSize(20);
   strokeWeight(5);
   fill(50, 150, 255);
   stroke("#83f3ff");
-  rect(650, 25, 125, 40, 10);
+  rect(650, 25, 125, 40, 10); 
 
   strokeWeight(1);
   stroke(0);
   fill("white");
   text("Money: " + money, 660, 50);
+
+  // Statistieken scherm
+  textSize(20);
+  strokeWeight(5);
+  fill(50, 150, 255);
+  stroke("#83f3ff");
+  rect(650, 75, 125, 140, 10); 
+
+  textSize(9);
+  strokeWeight(1);
+  stroke(0);
+  fill("white");
+  text("Birthday: " + geboorteDatum, 670, 205);
+  textSize(20);
+  
 
   // Tekst bij de balken
   text("Hunger:", 50, 45);
@@ -266,19 +255,22 @@ function draw() {
   text("Luck:", 50, 65);
 
   // Bepaal de status van het huisdier
-  let huidigeStatus = status[0];
-  if (gezondheid < 30) {
-    huidigeStatus = status[1];
+  let huidigeStatus = status[0]; 
+  if (money >= 1000) {
+    huidigeStatus = status[3]; // moggity
+  } else if (gezondheid < 30) {
+    huidigeStatus = status[1]; // cruelty
   } else if (geluk < 40 || energie < 30) {
-    huidigeStatus = status[2];
+    huidigeStatus = status[2]; // sadity
   }
 
+  // Kleur van het hoofd aanpassen op basis van status
   if (huidigeStatus == "cruelty") {
     fill(220, 50, 50);
   } else if (huidigeStatus == "sadity") {
     fill(50, 100, 220);
   } else if (huidigeStatus == "moggity") {
-    fill(50, 100, 220);
+    fill(255, 215, 0); // Goudgeel net als de emoji
   } else {
     fill(255, 220, 0);
   }
@@ -288,7 +280,67 @@ function draw() {
   strokeWeight(1);
   circle(400, 300, 100);
 
-  if (isSlapend == false) {
+  // Teken ogen en mond afhankelijk van de status of slaapstand
+  if (isSlapend == true) {
+    stroke(0);
+    strokeWeight(2);
+    line(370, 280, 390, 280);
+    line(410, 280, 430, 280);
+
+    // Slaapmasker
+    fill(50, 50, 100);
+    stroke(0);
+    strokeWeight(2);
+    rect(360, 265, 80, 30, 10);
+    
+    line(355, 275, 360, 275);
+    line(440, 275, 445, 275);
+
+    line(390, 320, 410, 320);
+
+    // Zzz wolkje
+    fill(255);
+    stroke(0);
+    strokeWeight(2);
+    rect(450, 180, 100, 50, 20);
+    circle(450, 250, 20);
+    circle(435, 265, 10);
+    
+    noStroke();
+    fill(0);
+    textSize(22);
+    text("Z z z...", 470, 212);
+
+  } else if (huidigeStatus == "moggity") {
+
+    
+    // Wenkbrauwn
+    stroke(0);
+    strokeWeight(4);
+    line(365, 265, 395, 275);
+    line(405, 275, 435, 265);
+
+    // Ogen
+    strokeWeight(2);
+    noFill();
+    arc(380, 280, 30, 15, PI, TWO_PI);
+    arc(420, 280, 30, 15, PI, TWO_PI);
+    fill("black");
+    noStroke();
+    circle(380, 283, 8);
+    circle(420, 283, 8);
+
+    // Kaaklijn
+    stroke(160, 120, 0); // Donkergele/bruine schaduwstreep
+    strokeWeight(3);
+    line(355, 300, 362, 340); 
+    line(445, 300, 438, 340); 
+
+    stroke(0);
+    strokeWeight(3);
+    line(385, 330, 415, 330);
+
+  } else {
     fill("black");
     noStroke();
     circle(380, 280, 10);
@@ -305,45 +357,9 @@ function draw() {
       strokeWeight(3);
       arc(400, 320, 40, 25, PI, TWO_PI);
     }
-  } else if (huidigeStatus == "moggity") {
-    noFill();
-    stroke(0);
-    strokeWeight(3);
-    arc(400, 310, 50, 30, 0, PI);
-
-    rect(370, 200, 100, 30);
-  } else {
-    stroke(0);
-    strokeWeight(2);
-    line(370, 280, 390, 280);
-    line(410, 280, 430, 280);
-
-    // Slaapmasker
-    fill(50, 50, 100);
-    stroke(0);
-    strokeWeight(2);
-    rect(360, 265, 80, 30, 10);
-
-    line(355, 275, 360, 275);
-    line(440, 275, 445, 275);
-
-    line(390, 320, 410, 320);
-
-    // Zzz wolkje
-    fill(255);
-    stroke(0);
-    strokeWeight(2);
-    rect(450, 180, 100, 50, 20);
-    circle(450, 250, 20);
-    circle(435, 265, 10);
-
-    noStroke();
-    fill(0);
-    textSize(22);
-    text("Z z z...", 470, 212);
   }
 
-  // Tekstwolkje voor andere acties
+// Tekstwolkje voor andere acties
   if (actieTimer > 0 && isSlapend == false) {
     fill(255);
     stroke(0);
@@ -351,11 +367,14 @@ function draw() {
     rect(450, 180, 120, 50, 20);
     circle(450, 250, 20);
     circle(435, 265, 10);
-
+    
     noStroke();
     fill(0);
     textSize(18);
     text(actieTekst, 465, 212);
+    
+    stroke(0);
+    strokeWeight(1);
   }
 
   // Toon status naam boven het hoofd
@@ -363,6 +382,7 @@ function draw() {
   fill(255);
   text(huidigeStatus, 370, 180);
 
+  // Actie knoppen
   fill(50, 150, 255);
   stroke("#83f3ff");
   strokeWeight(5);
@@ -435,36 +455,28 @@ function mouseClicked() {
       isSlapend = false;
       actieTimer = 0;
 
-      // Als je een nieuwe Verity koopt, krijgt hij meteen een nieuwe geboortedatum!
       let d = new Date();
-      geboorteDatum =
-        d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+      geboorteDatum = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
 
       allesOpslaan();
     }
-    return;
+    return; 
   }
 
   // 1. Feed knop
   if (mouseX > 100 && mouseX < 210 && mouseY > 480 && mouseY < 520) {
     if (money >= feedCost) {
-      money = money - feedCost;
+      money = money - feedCost;       
       honger = honger + 10;
-      if (honger > 100) {
-        honger = 100;
-      }
-
-      feedCost = feedCost + 1;
-      isSlapend = false;
-
+      if (honger > 100) { honger = 100; }
+      
+      feedCost = feedCost + 1;     
+      isSlapend = false; 
+      
       actieTekst = "Yum!";
       actieTimer = 3;
 
-      if (eat.isPlaying()) {
-        eat.stop();
-      } else {
-        eat.play();
-      }
+      if (eat.isPlaying()) { eat.stop(); } else { eat.play(); }
       allesOpslaan();
     }
   }
@@ -472,70 +484,48 @@ function mouseClicked() {
   // 2. Entertain knop
   if (mouseX > 220 && mouseX < 330 && mouseY > 480 && mouseY < 520) {
     geluk = geluk + 15;
-    if (geluk > 100) {
-      geluk = 100;
-    }
+    if (geluk > 100) { geluk = 100; }
 
     energie = energie - 5;
-    if (energie < 0) {
-      energie = 0;
-    }
+    if (energie < 0) { energie = 0; }
 
     isSlapend = false;
 
     actieTekst = "Hey its Verity!";
     actieTimer = 3;
 
-    if (heyItsVerity.isPlaying()) {
-      heyItsVerity.stop();
-    } else {
-      heyItsVerity.play();
-    }
+    if (heyItsVerity.isPlaying()) { heyItsVerity.stop(); } else { heyItsVerity.play(); }
     allesOpslaan();
   }
 
   // 3. Clean knop
   if (mouseX > 100 && mouseX < 210 && mouseY > 530 && mouseY < 570) {
     gezondheid = gezondheid + 15;
-    if (gezondheid > 100) {
-      gezondheid = 100;
-    }
+    if (gezondheid > 100) { gezondheid = 100; }
 
     energie = energie - 5;
-    if (energie < 0) {
-      energie = 0;
-    }
+    if (energie < 0) { energie = 0; }
 
     isSlapend = false;
 
     actieTekst = "Pling!";
     actieTimer = 3;
 
-    if (clean.isPlaying()) {
-      clean.stop();
-    } else {
-      clean.play();
-    }
+    if (clean.isPlaying()) { clean.stop(); } else { clean.play(); }
     allesOpslaan();
   }
 
   // 4. Sleep knop
   if (mouseX > 220 && mouseX < 330 && mouseY > 530 && mouseY < 570) {
     energie = 100;
-
+    
     gezondheid = gezondheid + 5;
-    if (gezondheid > 100) {
-      gezondheid = 100;
-    }
+    if (gezondheid > 100) { gezondheid = 100; }
 
-    isSlapend = true;
-    actieTimer = 0;
+    isSlapend = true; 
+    actieTimer = 0; 
 
-    if (sleepSound.isPlaying()) {
-      sleepSound.stop();
-    } else {
-      sleepSound.play();
-    }
+    if (sleepSound.isPlaying()) { sleepSound.stop(); } else { sleepSound.play(); }
     allesOpslaan();
   }
 
@@ -560,8 +550,8 @@ function mouseClicked() {
       moneyPerClick = moneyPerClick + 1;
       upgradeCost = floor(upgradeCost * 1.5);
       isSlapend = false;
-
-      actieTekst = "Upgrade";
+      
+      actieTekst = "Upgrade!";
       actieTimer = 2;
 
       allesOpslaan();
@@ -569,13 +559,7 @@ function mouseClicked() {
   }
 
   // Klik op het huisdier zelf voor geluid
-  if (
-    isSlapend == false &&
-    mouseX > 350 &&
-    mouseX < 450 &&
-    mouseY > 250 &&
-    mouseY < 350
-  ) {
+  if (isSlapend == false && mouseX > 350 && mouseX < 450 && mouseY > 250 && mouseY < 350) {
     if (mijnGeluid.isPlaying()) {
       mijnGeluid.stop();
     } else {
