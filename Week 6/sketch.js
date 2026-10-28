@@ -8,6 +8,8 @@ let moneyPerClick = 1;
 let upgradeCost = 10;
 let feedCost = 5;
 
+let aantalDoden = 0;
+
 // Status van het huisdier
 let status = ["verity", "cruelty", "sadity", "moggity"];
 
@@ -37,6 +39,7 @@ let dead;
 function preload() {
   achtergrond = loadImage("Achtergronden/huisdierachtergrond");
   skull = loadImage("skull");
+  geldIcoon = loadImage("GeldIcoon_transparant.png")
 
   mijnGeluid = loadSound("Sounds/verity-greeting.mp3");
   heyItsVerity = loadSound("Sounds/hey-its-me-its-verity.mp3");
@@ -74,6 +77,9 @@ function setup() {
   if (getItem("opgeslagenFeedCost") !== null) {
     feedCost = getItem("opgeslagenFeedCost");
   }
+    if (getItem("opgeslagenAantalDoden") !== null) {
+    aantalDoden = getItem("opgeslagenAantalDoden");
+  }
 
   // Geboortetijd en datum ophalen of instellen
   let opgeslagenGeboorteTijd = getItem("opgeslagenGeboorteTijd");
@@ -102,6 +108,7 @@ function allesOpslaan() {
   storeItem("opgeslagenFeedCost", feedCost);
   storeItem("opgeslagenGeboorteTijd", geboorteTijd);
   storeItem("opgeslagenGeboorteDatum", geboorteDatum);
+  storeItem("opgeslagenAantalDoden", aantalDoden);
 }
 
 function draw() {
@@ -148,7 +155,6 @@ function draw() {
     textSize(14);
     strokeWeight(1);
     fill(255);
-    text("Died:", 115, 390);
     textSize(14);
     text(sterfDatum, 115, 420);
 
@@ -260,7 +266,9 @@ function draw() {
   strokeWeight(1);
   stroke(0);
   fill(255);
-  text("Money: " + money, 660, 50);
+  text(money, 700, 52);
+  geldIcoon.resize(90,50)
+  image(geldIcoon, 630,20)
 
   // Bereken hoeveel dagen het huisdier leeft op basis van tijd
   let huidigeTijd = Date.now();
@@ -279,6 +287,11 @@ function draw() {
   stroke(0);
   fill(255);
   text("Days: " + dagenGeleefd, 660, 110);
+
+  strokeWeight(1);
+  stroke(0);
+  fill(255);
+  text("Deaths: " + aantalDoden, 660, 135);
 
   textSize(12);
   fill("white");
@@ -487,6 +500,8 @@ function mouseClicked() {
       gameOver = false;
       isSlapend = false;
       actieTimer = 0;
+
+      aantalDoden++;
 
       // Reset geboortetijd en datum bij een nieuwe verity
       geboorteTijd = Date.now();
