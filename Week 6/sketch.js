@@ -35,6 +35,17 @@ let petY = 320;
 let petGrootte = 256;
 let deadGrootte = 220; // grootte van Deadity op het game-over scherm
 
+// Minigame klik op de munt
+let miniEnergieKost = 20; // hoeveelheid energie het kost
+let miniHongerKost = 15; // hoeveelheid honger het kost
+let miniBeloning = 100; // hoeveelheid munten als je wint
+let miniDoel = 5; // zoveel keer moet je op de munt klikken
+
+let miniFase = "uit"; // uit, spelen of resultaat
+let miniScore = 0;
+let miniMuntX = 400;
+let miniMuntY = 300;
+
 // Plaatjes en geluiden
 let achtergrond;
 let skull;
@@ -158,8 +169,8 @@ function draw() {
 
     // Grafsteen
     strokeWeight(10);
-    fill("grey")
     stroke("#3e3e3e");
+    fill("grey")
     circle(150, 300, 100);
     rect(100, 300, 100, 150);
 
@@ -168,7 +179,7 @@ function draw() {
     stroke(0);
     fill(255);
     textSize(25);
-    text("Verity", 120, 360);
+    text("Verity", 120, 340);
 
     textSize(10);
     strokeWeight(0);
@@ -202,6 +213,12 @@ function draw() {
     textSize(16);
     text("Get a new verity", 347, 455);
 
+    return;
+  }
+
+  // Als de minigame bezig is, teken dan alleen de minigame
+  if (miniFase != "uit") {
+    speelMinigame();
     return;
   }
 
@@ -512,6 +529,20 @@ function draw() {
   textSize(14);
   text("Upgrade (" + upgradeCost + ")", 610, 555);
 
+  // Minigame knop
+  fill(50, 150, 255);
+  stroke("#83f3ff");
+  strokeWeight(5);
+  rect(360, 480, 130, 40, 10);
+  strokeWeight(1);
+  stroke(0);
+  fill(255);
+  textSize(16);
+  text("Minigame", 387, 505);
+
+  textSize(11);
+  text("-" + miniEnergieKost + " energy, -" + miniHongerKost + " hunger", 360, 538);
+
   // "Are you sure" scherm
   if (bezigMetResetten == true) {
     // Donkere achtergrond overlay
@@ -575,6 +606,19 @@ function mouseClicked() {
         d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
 
       allesOpslaan();
+    }
+    return;
+  }
+
+  // Tijdens de minigame doen de gewone knoppen niets
+  if (miniFase == "spelen") {
+    klikOpMunt();
+    return;
+  }
+  if (miniFase == "resultaat") {
+    // Continue knop
+    if (mouseX > 330 && mouseX < 470 && mouseY > 340 && mouseY < 380) {
+      miniFase = "uit";
     }
     return;
   }
@@ -748,6 +792,20 @@ function mouseClicked() {
     }
   }
 
+  // Minigame knop
+  if (mouseX > 360 && mouseX < 490 && mouseY > 480 && mouseY < 520) {
+    if (energie <= miniEnergieKost) {
+      actieTekst = "Too tired!";
+      actieTimer = 2;
+    } else if (honger <= miniHongerKost) {
+      actieTekst = "Too hungry!";
+      actieTimer = 2;
+    } else {
+      startMinigame();
+      return;
+    }
+  }
+
   // Klik op het huisdier zelf voor geluid
   if (isSlapend == false && dist(mouseX, mouseY, petX, petY) < 85) {
     if (mijnGeluid.isPlaying()) {
@@ -755,5 +813,94 @@ function mouseClicked() {
     } else {
       mijnGeluid.play();
     }
+  }
+}
+
+// mINI GAME functie
+
+function startMinigame() {
+  // Het spelen kost energie en honger
+  energie = energie - miniEnergieKost;
+  honger = honger - miniHongerKost;
+  isSlapend = false;
+  actieTimer = 0;
+
+  miniFase = "spelen";
+  miniScore = 0;
+  nieuweMunt();
+
+  allesOpslaan();
+}
+
+// Zet de munt op een willekeurige plek
+function nieuweMunt() {
+  miniMuntX = random(100, 700);
+  miniMuntY = random(140, 430);
+}
+
+function klikOpMunt() {
+  if (dist(mouseX, mouseY, miniMuntX, miniMuntY) < 60) {
+    miniScore++;
+    clean.play();
+
+    if (miniScore >= miniDoel) {
+      // Gewonnen!
+      money = money + miniBeloning;
+      totaalGeld = totaalGeld + miniBeloning;
+      miniFase = "resultaat";
+      allesOpslaan();
+    } else {
+      nieuweMunt();
+    }
+  }
+}
+
+function speelMinigame() {
+  background(achtergrond);
+
+  if (miniFase == "spelen") {
+    // De munt
+    imageMode(CENTER);
+    image(geldIcoon, miniMuntX, miniMuntY, 180, 100);
+    imageMode(CORNER);
+
+    // Score
+    fill(50, 150, 255);
+    stroke("#83f3ff");
+    strokeWeight(5);
+    rect(300, 20, 200, 60, 10);
+
+    strokeWeight(1);
+    stroke(0);
+    fill(255);
+    textSize(20);
+    text("Coins: " + miniScore + " / " + miniDoel, 335, 58);
+  } else {
+    // Resultaat scherm
+    fill(0, 0, 0, 180);
+    noStroke();
+    rect(0, 0, width, height);
+
+    fill(50, 150, 255);
+    stroke("#83f3ff");
+    strokeWeight(5);
+    rect(250, 200, 300, 200, 15);
+
+    stroke(0);
+    strokeWeight(2);
+    fill(255);
+    textSize(26);
+    text("You won!", 340, 250);
+    textSize(20);
+    text("+" + miniBeloning + " coins", 345, 290);
+
+    // Continue knop
+    fill(0, 200, 0);
+    stroke(0);
+    strokeWeight(2);
+    rect(330, 340, 140, 40, 10);
+    fill(255);
+    textSize(18);
+    text("Continue", 360, 367);
   }
 }
